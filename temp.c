@@ -1,4 +1,5 @@
 // win32 Visual C 컴파일시 추가
+_putenv("NLS_LANG=American_America.KO16KSC5601");
 // 프로그램 가장 첫 줄에 추가할 것
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -115,6 +116,8 @@ void input_text(const wchar_t* inputBuffer) {
 
 void main()
 {
+    // 인코딩 설정
+    _putenv("NLS_LANG=American_America.KO16KSC5601");
     // 유저 정보 
     struct UserInfo user;
 	DB_connect();
