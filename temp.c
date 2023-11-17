@@ -39,6 +39,8 @@ void save_user_info(char *id, char *pw);
 void text_input();
 void input_post(const char* title, const wchar_t* w_text);
 int get_post_id();
+void delete_post();
+int get_post_info(int post_id, char* title, char* id, int* del);
 
 EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR uid[80];
@@ -59,39 +61,11 @@ bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
 
-void get_text() {
-    EXEC SQL BEGIN DECLARE SECTION;
-        varchar text[2000];
-    EXEC SQL END DECLARE SECTION;
-
-    /* Register sql_error() as the error handler. */
-    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
-
-    /* Cursor 선언 */
-    EXEC SQL DECLARE text_cursor CURSOR FOR
-        SELECT text FROM test;
-
-    /* Cursor 열기 */
-    EXEC SQL OPEN text_cursor;
-
-    /* 결과 읽기 */
-    while (1) {
-        EXEC SQL FETCH text_cursor INTO :text;
-        if (sqlca.sqlcode != 0) break;  // No more rows
-
-        text.arr[text.len] = '\0';
-        printf("%s\n", text.arr);
-    }
-
-    /* Cursor 닫기 */
-    EXEC SQL CLOSE text_cursor;
-}
-
 void main(){
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
 	DB_connect();
-    int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태
+    int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태, 3: 게스트 상태
     while(true){
         system("cls"); // 콘솔화면 초기화
         // 가로 80, 세로 24
@@ -100,18 +74,28 @@ void main(){
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
         printf("\n");
-        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else if(msg_state==3){gotoxy(0 ,5);printf("                               게스트 모드입니다.\n");}else{printf("\n");}
+        if(msg_state==1){
+            printf("                           명령어를 찾을 수 없습니다.\n");
+        }else if (msg_state==2){
+            gotoxy(0 ,5);
+            printf("                               로그인 상태입니다.\n");
+        }else if(msg_state==3){
+            gotoxy(0 ,5);
+            printf("                               게스트 모드입니다.\n");
+        }else{
+            printf("\n");
+        }
         printf("\n");
         printf("\n");
         printf("                                     login\n");
         printf("\n");
         printf("                                     logout\n");
         printf("\n");
-        printf("                                     singup\n");
+        printf("                                     signup\n");
         printf("\n");
         printf("                                     write\n");
         printf("\n");
-        printf("\n");
+        printf("                                     delete\n");
         printf("\n");
         printf("\n");
         printf("\n");
@@ -143,13 +127,138 @@ void main(){
             } else{
                 text_input();
             }
-        } else if(strcmp(op, "a") == 0){
-            get_text();
+        } else if(strcmp(op, "delete") == 0){
+            delete_post();
         }
         else {
             msg_state = 1;
         }
     }
+}
+
+int get_post_info(int post_id, char* title, char* id, int* del) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+       varchar v_title[128];
+       varchar v_id[20];
+        int v_del;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    v_post_id = post_id;
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL SELECT title, id, del INTO :v_title, :v_id, :v_del
+              FROM post 
+              WHERE post_id = :v_post_id; 
+
+    /* 가져온 값이 있으면 1, 없으면 0 반환 */
+    if (sqlca.sqlcode == 0) {
+        /* 가져온 값을 C 문자열에 복사 */
+        strncpy(title, (char*)v_title.arr, v_title.len);
+        title[v_title.len] = '\0';
+
+        strncpy(id, (char*)v_id.arr, v_id.len);
+        id[v_id.len] = '\0';    
+        *del = v_del;
+        return 1;  // 가져온 값이 있음
+    } else {
+        return 0;  // 가져온 값이 없음
+    }
+}
+
+// 게시글 삭제 처리
+void delete_post(){
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                   게시물 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 게시물 정보 ]\n");
+    printf("\n\n\n");
+    printf("               삭제할 게시물 ID :\n");
+    printf("\n\n");
+    printf("                             ID :\n");
+    printf("\n\n");
+    printf("                           제목 :\n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
+    
+    int post_id;
+    while(true){
+        gotoxy(0, 7);
+        printf("               삭제할 게시물 ID :                  ");
+        gotoxy(34, 7);
+        char cpost_id[20];
+        scanf("%s",cpost_id);
+        if (strcmp(cpost_id, "exit") == 0){
+            return;
+        }
+        post_id = atoi(cpost_id);
+        // 정보를 가져온다
+        char title[128];  // 가져온 게시물의 제목을 저장할 변수
+        char id[20];  // 가져온 게시물의 작성자 ID를 저장할 변수    
+        int del = -1;
+
+        if (get_post_info(post_id, title, id, &del)){
+            if (del){
+                gotoxy(0, 5);
+                printf("                           이미 삭제된 게시물이 입니다.");    
+            }else{
+                gotoxy(34, 10);
+                printf("%s",id);
+                gotoxy(34, 13);
+                printf("%s",title);
+                if (strcmp(user.id, id) != 0) {
+                    gotoxy(0, 5);
+                    printf("                             삭제할 권한이 없습니다.");
+                }else{
+                    char op[5];
+                    gotoxy(0, 5);
+                    printf("                                                                               ");
+                    gotoxy(0, 17);
+                    printf("                            삭제하시겠습니까?(y,n):            ");    
+                    gotoxy(52, 17);
+                    scanf("%s",op);
+                    if (strcmp(op, "y") == 0 || strcmp(op, "Y") == 0) {
+                        // 'y' 또는 'Y'를 입력하면 루프 종료
+                        break;
+                    } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
+                        // 'n' 또는 'N'을 입력하면 함수 종료
+                        return;
+                    }
+                }
+            }
+        } else{
+            gotoxy(0, 5);
+            printf("                                게시물이 없습니다.                       ");    
+        }
+    }  
+
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    /* 매개변수 post_id 값을 Oracle 변수에 복사 */
+    v_post_id = post_id;
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL UPDATE post SET del = 1 WHERE post_id = :v_post_id;
+
+    EXEC SQL COMMIT;
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                   게시물 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 게시물 정보 ]\n\n\n\n");;
+    printf("                              삭제가 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
 }
 
 // 이번에 입력에 사용할 게시물 id를 가져옵니다.
@@ -353,10 +462,14 @@ void signup() {
     printf("                   PW (CONFIRM) : \n");
     printf("\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
 
     while (true){
         gotoxy(34, 7);
         scanf("%s", temp_id);
+        if (strcmp(temp_id, "exit") == 0){
+            return;
+        }
 
         if (check_id(temp_id) == 0){
             break;
@@ -459,12 +572,21 @@ void login() {
         printf("                             PW:\n");
         printf("\n\n\n\n\n\n\n\n\n");
         printf("--------------------------------------------------------------------------------\n");
+        printf("나가려면 exit를 입력하세요.");
 
     while(1){
         gotoxy(34, 9);
         scanf("%s", user.id);
+        if (strcmp(user.id, "exit") == 0){
+            strcpy(user.id, "");
+            return;
+        }
         gotoxy(34, 13);
         pw_input(user.pw);
+        if (strcmp(user.pw, "exit") == 0){
+            strcpy(user.pw, "");
+            return;
+        }
 
         if (check_user_info(user) == 0) {
             gotoxy(0, 5);
