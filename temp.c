@@ -31,12 +31,14 @@ void DB_connect();
 void Get_tuple();
 void sql_error(char *msg) ;
 void login();
-int check_user_info(struct UserInfo *user);
+int check_user_info();
 void signup();
 int check_id(const char *id);
 void pw_input(char *pw);
 void save_user_info(char *id, char *pw);
 void text_input();
+void input_post(const char* title, const wchar_t* w_text);
+int get_post_id();
 
 EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR uid[80];
@@ -53,6 +55,9 @@ struct UserInfo {
 };
 
 bool login_state = false;
+
+// 유저 정보 
+struct UserInfo user;
 
 void get_text() {
     EXEC SQL BEGIN DECLARE SECTION;
@@ -82,46 +87,9 @@ void get_text() {
     EXEC SQL CLOSE text_cursor;
 }
 
-
-void input_text(const wchar_t* inputBuffer) {
-    int strSize = WideCharToMultiByte(CP_ACP, 0,inputBuffer,-1, NULL, 0,NULL, NULL);
-    char* pStr;
-    
-    pStr = (char *)malloc(strSize);
-
-    WideCharToMultiByte(CP_ACP, 0, inputBuffer, -1, pStr, strSize, 0,0);
-    
-    EXEC SQL BEGIN DECLARE SECTION;
-        varchar id_var[2000]; // Use sqlnchar for Unicode strings
-    EXEC SQL END DECLARE SECTION;
-
-    /* Register sql_error() as the error handler. */
-    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
-
-    /* 사용자가 입력한 데이터를 Oracle 변수에 복사 */
-    strncpy((char *)id_var.arr, pStr, 2000);
-    id_var.len = strlen((char *)id_var.arr);
-
-    printf("%s", (char *)id_var.arr);
-    fgetc(stdin);  // getchar() 대신 fgetc(stdin)을 사용
-
-    /* 실행시킬 SQL 문장*/
-    EXEC SQL INSERT INTO test VALUES (:id_var);
-
-    EXEC SQL COMMIT;
-    
-    /* 확인용: 오류 코드 출력 */
-    printf("SQLCODE: %d\n", sqlca.sqlcode);
-    free(pStr);
-}
-
-
-void main()
-{
+void main(){
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
-    // 유저 정보 
-    struct UserInfo user;
 	DB_connect();
     int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태
     while(true){
@@ -132,7 +100,7 @@ void main()
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
         printf("\n");
-        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else{printf("\n");}
+        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else if(msg_state==3){gotoxy(0 ,5);printf("                               게스트 모드입니다.\n");}else{printf("\n");}
         printf("\n");
         printf("\n");
         printf("                                     login\n");
@@ -158,7 +126,7 @@ void main()
         scanf("%s", op);
         if (strcmp(op, "login") == 0) {
             if (!login_state)
-                login(&user);
+                login();
             else{
                 msg_state = 2;
             }
@@ -170,7 +138,11 @@ void main()
             user.pw[0] = '\0';
             msg_state = 0;
         } else if(strcmp(op, "write") == 0){
-            text_input();
+            if(!login_state){
+                msg_state = 3;
+            } else{
+                text_input();
+            }
         } else if(strcmp(op, "a") == 0){
             get_text();
         }
@@ -180,12 +152,111 @@ void main()
     }
 }
 
+// 이번에 입력에 사용할 게시물 id를 가져옵니다.
+int get_post_id(){
+    EXEC SQL BEGIN DECLARE SECTION;
+        int max_post_id;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL SELECT NVL(MAX(post_id), 0) INTO :max_post_id FROM post;
+
+    /* 확인용: 오류 코드 출력 */
+    printf("SQLCODE: %d\n", sqlca.sqlcode);
+
+    if (sqlca.sqlcode != 0) {
+        /* 오류 발생 시 처리 */
+        return 1; // 예외 처리를 원하는 방식으로 수정하세요.
+    }
+
+    /* 결과에 1을 더한 값을 반환 */
+    return max_post_id + 1;
+}
+
+void input_post(const char* title, const wchar_t* w_text) {
+    int strSize = WideCharToMultiByte(CP_ACP, 0, w_text, -1, NULL, 0, NULL, NULL);
+    char* pStr;
+    
+    pStr = (char *)malloc(strSize);
+
+    WideCharToMultiByte(CP_ACP, 0, w_text, -1, pStr, strSize, 0, 0);
+    
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+        varchar v_id[20];
+        varchar v_title[128];
+        varchar v_text[2000]; 
+        int v_del;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    /* 사용자가 입력한 데이터를 Oracle 변수에 복사 */
+    v_post_id = get_post_id();
+
+    strncpy((char *)v_title.arr, title, 128);
+    v_title.len = strlen((char *)v_title.arr);
+
+    strncpy((char *)v_text.arr, pStr, 2000);
+    v_text.len = strlen((char *)v_text.arr);
+
+    v_del = 0;
+
+    // v_id에 user.id를 복사
+    strncpy((char*)v_id.arr, user.id, 20); 
+    v_id.len = strlen((char*)v_id.arr);
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL INSERT INTO post (post_id, id, title, text, del) VALUES (:v_post_id, :v_id, :v_title, :v_text, :v_del);
+
+    EXEC SQL COMMIT;
+    
+    /* 확인용: 오류 코드 출력 */
+    printf("SQLCODE: %d\n", sqlca.sqlcode);
+    free(pStr);
+}
+
 void text_input(){
     system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("제목:\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                     [ 본문 ]\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("종료하려면 Esc 키를 누르세요.\n");
+
+    char title[128];
+    // 제목 입력단.
+    gotoxy(6, 1);
+    scanf("%s",title);
+
+    // 본문 입력단.
+    gotoxy(0, 4);
     _setmode(_fileno(stdout), _O_U16TEXT); // 유니코드 출력을 위한 모드 설정
     _setmode(_fileno(stdin), _O_U16TEXT);  // 유니코드 입력을 위한 모드 설정
-
-    wprintf(L"종료하려면 Esc 키를 누르세요.\n");
 
     wchar_t inputBuffer[2000]; // 충분한 크기의 배열로 설정
     memset(inputBuffer, 0, sizeof(inputBuffer)); // 배열 초기화
@@ -196,25 +267,38 @@ void text_input(){
         ch = _getwch(); // _getwch() 함수를 사용하여 유니코드 키 입력을 받음
 
         if (ch == 27) { // 27은 Esc 키의 ASCII 코드
-            wprintf(L"\nEsc 키를 눌러 종료합니다.\n");
             inputBuffer[index] = L'\0';
             _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
             _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
-            input_text(inputBuffer);
+            input_post(title, inputBuffer);
             return;  // text_input 함수를 종료하고 main 함수의 while 루프로 돌아감
         }
         else if (ch == 8) {
             if (index > 0) {
                 wprintf(L"\b \b"); // 백스페이스 효과
                 inputBuffer[--index] = L'\0';
+                gotoxy(0, 0);
                 system("cls");
+                wprintf(L"--------------------------------------------------------------------------------\n");
+                _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
+                _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
+                printf("제목: %s\n", title);
+                _setmode(_fileno(stdout), _O_U16TEXT); // 유니코드 출력을 위한 모드 설정
+                _setmode(_fileno(stdin), _O_U16TEXT);  // 유니코드 입력을 위한 모드 설정
+                wprintf(L"--------------------------------------------------------------------------------\n");
+                wprintf(L"                                     [ 본문 ]\n");
+                wprintf(L"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                wprintf(L"--------------------------------------------------------------------------------\n");
                 wprintf(L"종료하려면 Esc 키를 누르세요.\n");
+                gotoxy(0, 4);
                 wprintf(L"%ls", inputBuffer);
             }
         }
         else if (ch == L'\r') {
-            wprintf(L"\n");
-            inputBuffer[index++] = '\n';
+            if(index < 18){
+                wprintf(L"\n");
+                inputBuffer[index++] = '\n';
+            }
         }
         // Enter 키를 누를 때는 처리하지 않음
         else if (ch != L'\r') {
@@ -227,8 +311,6 @@ void text_input(){
             break;
         }
     }
-
-    system("cls");
 }
 
 int check_id(const char *id) {
@@ -365,7 +447,7 @@ void pw_input(char *pw) {
     pw[i] = '\0';
 }
 
-void login(struct UserInfo *user) {
+void login() {
         system("cls");
         printf("--------------------------------------------------------------------------------\n");
         printf("                                      로그인\n");
@@ -380,9 +462,9 @@ void login(struct UserInfo *user) {
 
     while(1){
         gotoxy(34, 9);
-        scanf("%s", user->id);
+        scanf("%s", user.id);
         gotoxy(34, 13);
-        pw_input(user->pw);
+        pw_input(user.pw);
 
         if (check_user_info(user) == 0) {
             gotoxy(0, 5);
@@ -399,7 +481,7 @@ void login(struct UserInfo *user) {
     }
 }
 
-int check_user_info(struct UserInfo *user) {
+int check_user_info() {
     EXEC SQL BEGIN DECLARE SECTION;
         varchar  id[20];
         varchar pw[20];
@@ -410,10 +492,10 @@ int check_user_info(struct UserInfo *user) {
    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
 
    /* 사용자가 입력한 ID와 PW를 Oracle 변수에 복사 */
-   strcpy((char *)id.arr, user->id);
+   strcpy((char *)id.arr, user.id);
    id.len = strlen((char *)id.arr);
 
-   strcpy((char *)pw.arr, user->pw);
+   strcpy((char *)pw.arr, user.pw);
    pw.len = strlen((char *)pw.arr);
 
    /* 실행시킬 SQL 문장*/

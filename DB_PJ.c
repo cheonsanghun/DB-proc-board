@@ -103,16 +103,16 @@ static struct sqlexd {
    unsigned int   sqcmod;
    unsigned int   sqfmod;
    unsigned int   sqlpfmem;
-            void  *sqhstv[4];
-   unsigned int   sqhstl[4];
-            int   sqhsts[4];
-            void  *sqindv[4];
-            int   sqinds[4];
-   unsigned int   sqharm[4];
-   unsigned int   *sqharc[4];
-   unsigned short  sqadto[4];
-   unsigned short  sqtdso[4];
-} sqlstm = {13,4};
+            void  *sqhstv[5];
+   unsigned int   sqhstl[5];
+            int   sqhsts[5];
+            void  *sqindv[5];
+            int   sqinds[5];
+   unsigned int   sqharm[5];
+   unsigned int   *sqharc[5];
+   unsigned short  sqadto[5];
+   unsigned short  sqtdso[5];
+} sqlstm = {13,5};
 
 /* SQLLIB Prototypes */
 extern void sqlcxt (void **, unsigned int *,
@@ -138,18 +138,19 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,34,0,9,70,0,0,0,0,0,1,0,
-20,0,0,1,0,0,13,74,0,0,1,0,0,1,0,2,9,0,0,
-39,0,0,1,0,0,15,82,0,0,0,0,0,1,0,
-54,0,0,2,30,0,3,109,0,0,1,1,0,1,0,1,9,0,0,
-73,0,0,3,0,0,29,111,0,0,0,0,0,1,0,
-88,0,0,4,54,0,4,248,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-111,0,0,5,39,0,3,337,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-134,0,0,6,0,0,29,339,0,0,0,0,0,1,0,
-149,0,0,7,67,0,4,420,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-176,0,0,0,0,0,27,437,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-207,0,0,9,59,0,4,464,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-230,0,0,10,0,0,31,493,0,0,0,0,0,1,0,
+5,0,0,1,34,0,9,75,0,0,0,0,0,1,0,
+20,0,0,1,0,0,13,79,0,0,1,0,0,1,0,2,9,0,0,
+39,0,0,1,0,0,15,87,0,0,0,0,0,1,0,
+54,0,0,2,47,0,4,165,0,0,1,0,0,1,0,2,3,0,0,
+73,0,0,3,73,0,3,214,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+108,0,0,4,0,0,29,216,0,0,0,0,0,1,0,
+123,0,0,5,54,0,4,330,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+146,0,0,6,39,0,3,419,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+169,0,0,7,0,0,29,421,0,0,0,0,0,1,0,
+184,0,0,8,67,0,4,502,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+211,0,0,0,0,0,27,519,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+242,0,0,10,59,0,4,546,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+265,0,0,11,0,0,31,575,0,0,0,0,0,1,0,
 };
 
 
@@ -186,12 +187,14 @@ void DB_connect();
 void Get_tuple();
 void sql_error(char *msg) ;
 void login();
-int check_user_info(struct UserInfo *user);
+int check_user_info();
 void signup();
 int check_id(const char *id);
 void pw_input(char *pw);
 void save_user_info(char *id, char *pw);
 void text_input();
+void input_post(const char* title, const wchar_t* w_text);
+int get_post_id();
 
 /* EXEC SQL BEGIN DECLARE SECTION; */ 
 
@@ -214,6 +217,9 @@ struct UserInfo {
 };
 
 bool login_state = false;
+
+// 유저 정보 
+struct UserInfo user;
 
 void get_text() {
     /* EXEC SQL BEGIN DECLARE SECTION; */ 
@@ -328,105 +334,9 @@ struct { unsigned short len; unsigned char arr[2000]; } text;
 
 }
 
-
-void input_text(const wchar_t* inputBuffer) {
-    int strSize = WideCharToMultiByte(CP_ACP, 0,inputBuffer,-1, NULL, 0,NULL, NULL);
-    char* pStr;
-    
-    pStr = (char *)malloc(strSize);
-
-    WideCharToMultiByte(CP_ACP, 0, inputBuffer, -1, pStr, strSize, 0,0);
-    
-    /* EXEC SQL BEGIN DECLARE SECTION; */ 
-
-        /* varchar id_var[2000]; */ 
-struct { unsigned short len; unsigned char arr[2000]; } id_var;
- // Use sqlnchar for Unicode strings
-    /* EXEC SQL END DECLARE SECTION; */ 
-
-
-    /* Register sql_error() as the error handler. */
-    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
-
-
-    /* 사용자가 입력한 데이터를 Oracle 변수에 복사 */
-    strncpy((char *)id_var.arr, pStr, 2000);
-    id_var.len = strlen((char *)id_var.arr);
-
-    printf("%s", (char *)id_var.arr);
-    fgetc(stdin);  // getchar() 대신 fgetc(stdin)을 사용
-
-    /* 실행시킬 SQL 문장*/
-    /* EXEC SQL INSERT INTO test VALUES (:id_var); */ 
-
-{
-    struct sqlexd sqlstm;
-    sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 1;
-    sqlstm.sqladtp = &sqladt;
-    sqlstm.sqltdsp = &sqltds;
-    sqlstm.stmt = "insert into test  values (:b0)";
-    sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )54;
-    sqlstm.cud = sqlcud0;
-    sqlstm.sqlest = (unsigned char  *)&sqlca;
-    sqlstm.sqlety = (unsigned short)4352;
-    sqlstm.occurs = (unsigned int  )0;
-    sqlstm.sqhstv[0] = (         void  *)&id_var;
-    sqlstm.sqhstl[0] = (unsigned int  )2002;
-    sqlstm.sqhsts[0] = (         int  )0;
-    sqlstm.sqindv[0] = (         void  *)0;
-    sqlstm.sqinds[0] = (         int  )0;
-    sqlstm.sqharm[0] = (unsigned int  )0;
-    sqlstm.sqadto[0] = (unsigned short )0;
-    sqlstm.sqtdso[0] = (unsigned short )0;
-    sqlstm.sqphsv = sqlstm.sqhstv;
-    sqlstm.sqphsl = sqlstm.sqhstl;
-    sqlstm.sqphss = sqlstm.sqhsts;
-    sqlstm.sqpind = sqlstm.sqindv;
-    sqlstm.sqpins = sqlstm.sqinds;
-    sqlstm.sqparm = sqlstm.sqharm;
-    sqlstm.sqparc = sqlstm.sqharc;
-    sqlstm.sqpadto = sqlstm.sqadto;
-    sqlstm.sqptdso = sqlstm.sqtdso;
-    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
-    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
-}
-
-
-
-    /* EXEC SQL COMMIT; */ 
-
-{
-    struct sqlexd sqlstm;
-    sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 1;
-    sqlstm.sqladtp = &sqladt;
-    sqlstm.sqltdsp = &sqltds;
-    sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )73;
-    sqlstm.cud = sqlcud0;
-    sqlstm.sqlest = (unsigned char  *)&sqlca;
-    sqlstm.sqlety = (unsigned short)4352;
-    sqlstm.occurs = (unsigned int  )0;
-    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
-    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
-}
-
-
-    
-    /* 확인용: 오류 코드 출력 */
-    printf("SQLCODE: %d\n", sqlca.sqlcode);
-    free(pStr);
-}
-
-
-void main()
-{
+void main(){
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
-    // 유저 정보 
-    struct UserInfo user;
 	DB_connect();
     int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태
     while(true){
@@ -437,7 +347,7 @@ void main()
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
         printf("\n");
-        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else{printf("\n");}
+        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else if(msg_state==3){gotoxy(0 ,5);printf("                               게스트 모드입니다.\n");}else{printf("\n");}
         printf("\n");
         printf("\n");
         printf("                                     login\n");
@@ -463,7 +373,7 @@ void main()
         scanf("%s", op);
         if (strcmp(op, "login") == 0) {
             if (!login_state)
-                login(&user);
+                login();
             else{
                 msg_state = 2;
             }
@@ -475,7 +385,11 @@ void main()
             user.pw[0] = '\0';
             msg_state = 0;
         } else if(strcmp(op, "write") == 0){
-            text_input();
+            if(!login_state){
+                msg_state = 3;
+            } else{
+                text_input();
+            }
         } else if(strcmp(op, "a") == 0){
             get_text();
         }
@@ -485,12 +399,248 @@ void main()
     }
 }
 
+// 이번에 입력에 사용할 게시물 id를 가져옵니다.
+int get_post_id(){
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        int max_post_id;
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+    /* Register sql_error() as the error handler. */
+    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
+
+
+    /* 실행시킬 SQL 문장*/
+    /* EXEC SQL SELECT NVL(MAX(post_id), 0) INTO :max_post_id FROM post; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 1;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "select NVL(max(post_id),0) into :b0  from post ";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )54;
+    sqlstm.selerr = (unsigned short)1;
+    sqlstm.sqlpfmem = (unsigned int  )0;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&max_post_id;
+    sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    /* 확인용: 오류 코드 출력 */
+    printf("SQLCODE: %d\n", sqlca.sqlcode);
+
+    if (sqlca.sqlcode != 0) {
+        /* 오류 발생 시 처리 */
+        return 1; // 예외 처리를 원하는 방식으로 수정하세요.
+    }
+
+    /* 결과에 1을 더한 값을 반환 */
+    return max_post_id + 1;
+}
+
+void input_post(const char* title, const wchar_t* w_text) {
+    int strSize = WideCharToMultiByte(CP_ACP, 0, w_text, -1, NULL, 0, NULL, NULL);
+    char* pStr;
+    
+    pStr = (char *)malloc(strSize);
+
+    WideCharToMultiByte(CP_ACP, 0, w_text, -1, pStr, strSize, 0, 0);
+    
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        int v_post_id;
+        /* varchar v_id[20]; */ 
+struct { unsigned short len; unsigned char arr[20]; } v_id;
+
+        /* varchar v_title[128]; */ 
+struct { unsigned short len; unsigned char arr[128]; } v_title;
+
+        /* varchar v_text[2000]; */ 
+struct { unsigned short len; unsigned char arr[2000]; } v_text;
+ 
+        int v_del;
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+    /* Register sql_error() as the error handler. */
+    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
+
+
+    /* 사용자가 입력한 데이터를 Oracle 변수에 복사 */
+    v_post_id = get_post_id();
+
+    strncpy((char *)v_title.arr, title, 128);
+    v_title.len = strlen((char *)v_title.arr);
+
+    strncpy((char *)v_text.arr, pStr, 2000);
+    v_text.len = strlen((char *)v_text.arr);
+
+    v_del = 0;
+
+    // v_id에 user.id를 복사
+    strncpy((char*)v_id.arr, user.id, 20); 
+    v_id.len = strlen((char*)v_id.arr);
+
+    /* 실행시킬 SQL 문장*/
+    /* EXEC SQL INSERT INTO post (post_id, id, title, text, del) VALUES (:v_post_id, :v_id, :v_title, :v_text, :v_del); */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "insert into post (post_id,id,title,text,del) values (:b0,\
+:b1,:b2,:b3,:b4)";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )73;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_post_id;
+    sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqhstv[1] = (         void  *)&v_id;
+    sqlstm.sqhstl[1] = (unsigned int  )22;
+    sqlstm.sqhsts[1] = (         int  )0;
+    sqlstm.sqindv[1] = (         void  *)0;
+    sqlstm.sqinds[1] = (         int  )0;
+    sqlstm.sqharm[1] = (unsigned int  )0;
+    sqlstm.sqadto[1] = (unsigned short )0;
+    sqlstm.sqtdso[1] = (unsigned short )0;
+    sqlstm.sqhstv[2] = (         void  *)&v_title;
+    sqlstm.sqhstl[2] = (unsigned int  )130;
+    sqlstm.sqhsts[2] = (         int  )0;
+    sqlstm.sqindv[2] = (         void  *)0;
+    sqlstm.sqinds[2] = (         int  )0;
+    sqlstm.sqharm[2] = (unsigned int  )0;
+    sqlstm.sqadto[2] = (unsigned short )0;
+    sqlstm.sqtdso[2] = (unsigned short )0;
+    sqlstm.sqhstv[3] = (         void  *)&v_text;
+    sqlstm.sqhstl[3] = (unsigned int  )2002;
+    sqlstm.sqhsts[3] = (         int  )0;
+    sqlstm.sqindv[3] = (         void  *)0;
+    sqlstm.sqinds[3] = (         int  )0;
+    sqlstm.sqharm[3] = (unsigned int  )0;
+    sqlstm.sqadto[3] = (unsigned short )0;
+    sqlstm.sqtdso[3] = (unsigned short )0;
+    sqlstm.sqhstv[4] = (         void  *)&v_del;
+    sqlstm.sqhstl[4] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[4] = (         int  )0;
+    sqlstm.sqindv[4] = (         void  *)0;
+    sqlstm.sqinds[4] = (         int  )0;
+    sqlstm.sqharm[4] = (unsigned int  )0;
+    sqlstm.sqadto[4] = (unsigned short )0;
+    sqlstm.sqtdso[4] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    /* EXEC SQL COMMIT; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )108;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+    
+    /* 확인용: 오류 코드 출력 */
+    printf("SQLCODE: %d\n", sqlca.sqlcode);
+    free(pStr);
+}
+
 void text_input(){
     system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("제목:\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                     [ 본문 ]\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("종료하려면 Esc 키를 누르세요.\n");
+
+    char title[128];
+    // 제목 입력단.
+    gotoxy(6, 1);
+    scanf("%s",title);
+
+    // 본문 입력단.
+    gotoxy(0, 4);
     _setmode(_fileno(stdout), _O_U16TEXT); // 유니코드 출력을 위한 모드 설정
     _setmode(_fileno(stdin), _O_U16TEXT);  // 유니코드 입력을 위한 모드 설정
-
-    wprintf(L"종료하려면 Esc 키를 누르세요.\n");
 
     wchar_t inputBuffer[2000]; // 충분한 크기의 배열로 설정
     memset(inputBuffer, 0, sizeof(inputBuffer)); // 배열 초기화
@@ -501,25 +651,38 @@ void text_input(){
         ch = _getwch(); // _getwch() 함수를 사용하여 유니코드 키 입력을 받음
 
         if (ch == 27) { // 27은 Esc 키의 ASCII 코드
-            wprintf(L"\nEsc 키를 눌러 종료합니다.\n");
             inputBuffer[index] = L'\0';
             _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
             _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
-            input_text(inputBuffer);
+            input_post(title, inputBuffer);
             return;  // text_input 함수를 종료하고 main 함수의 while 루프로 돌아감
         }
         else if (ch == 8) {
             if (index > 0) {
                 wprintf(L"\b \b"); // 백스페이스 효과
                 inputBuffer[--index] = L'\0';
+                gotoxy(0, 0);
                 system("cls");
+                wprintf(L"--------------------------------------------------------------------------------\n");
+                _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
+                _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
+                printf("제목: %s\n", title);
+                _setmode(_fileno(stdout), _O_U16TEXT); // 유니코드 출력을 위한 모드 설정
+                _setmode(_fileno(stdin), _O_U16TEXT);  // 유니코드 입력을 위한 모드 설정
+                wprintf(L"--------------------------------------------------------------------------------\n");
+                wprintf(L"                                     [ 본문 ]\n");
+                wprintf(L"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                wprintf(L"--------------------------------------------------------------------------------\n");
                 wprintf(L"종료하려면 Esc 키를 누르세요.\n");
+                gotoxy(0, 4);
                 wprintf(L"%ls", inputBuffer);
             }
         }
         else if (ch == L'\r') {
-            wprintf(L"\n");
-            inputBuffer[index++] = '\n';
+            if(index < 18){
+                wprintf(L"\n");
+                inputBuffer[index++] = '\n';
+            }
         }
         // Enter 키를 누를 때는 처리하지 않음
         else if (ch != L'\r') {
@@ -532,8 +695,6 @@ void text_input(){
             break;
         }
     }
-
-    system("cls");
 }
 
 int check_id(const char *id) {
@@ -563,12 +724,12 @@ struct { unsigned short len; unsigned char arr[20]; } id_var;
 {
     struct sqlexd sqlstm;
     sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 2;
+    sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select count(id) into :b0  from user_info where id=:b1";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )88;
+    sqlstm.offset = (unsigned int  )123;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -702,12 +863,12 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
 {
     struct sqlexd sqlstm;
     sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 2;
+    sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "insert into user_info  values (:b0,:b1)";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )111;
+    sqlstm.offset = (unsigned int  )146;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -748,11 +909,11 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
 {
     struct sqlexd sqlstm;
     sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 2;
+    sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )134;
+    sqlstm.offset = (unsigned int  )169;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -790,7 +951,7 @@ void pw_input(char *pw) {
     pw[i] = '\0';
 }
 
-void login(struct UserInfo *user) {
+void login() {
         system("cls");
         printf("--------------------------------------------------------------------------------\n");
         printf("                                      로그인\n");
@@ -805,9 +966,9 @@ void login(struct UserInfo *user) {
 
     while(1){
         gotoxy(34, 9);
-        scanf("%s", user->id);
+        scanf("%s", user.id);
         gotoxy(34, 13);
-        pw_input(user->pw);
+        pw_input(user.pw);
 
         if (check_user_info(user) == 0) {
             gotoxy(0, 5);
@@ -824,7 +985,7 @@ void login(struct UserInfo *user) {
     }
 }
 
-int check_user_info(struct UserInfo *user) {
+int check_user_info() {
     /* EXEC SQL BEGIN DECLARE SECTION; */ 
 
         /* varchar  id[20]; */ 
@@ -842,10 +1003,10 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
 
 
    /* 사용자가 입력한 ID와 PW를 Oracle 변수에 복사 */
-   strcpy((char *)id.arr, user->id);
+   strcpy((char *)id.arr, user.id);
    id.len = strlen((char *)id.arr);
 
-   strcpy((char *)pw.arr, user->pw);
+   strcpy((char *)pw.arr, user.pw);
    pw.len = strlen((char *)pw.arr);
 
    /* 실행시킬 SQL 문장*/
@@ -857,13 +1018,13 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
 {
    struct sqlexd sqlstm;
    sqlstm.sqlvsn = 13;
-   sqlstm.arrsiz = 3;
+   sqlstm.arrsiz = 5;
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.stmt = "select count(id) into :b0  from user_info where (id=:b1 an\
 d pw=:b2)";
    sqlstm.iters = (unsigned int  )1;
-   sqlstm.offset = (unsigned int  )149;
+   sqlstm.offset = (unsigned int  )184;
    sqlstm.selerr = (unsigned short)1;
    sqlstm.sqlpfmem = (unsigned int  )0;
    sqlstm.cud = sqlcud0;
@@ -926,11 +1087,11 @@ void DB_connect()
 {
    struct sqlexd sqlstm;
    sqlstm.sqlvsn = 13;
-   sqlstm.arrsiz = 4;
+   sqlstm.arrsiz = 5;
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.iters = (unsigned int  )10;
-   sqlstm.offset = (unsigned int  )176;
+   sqlstm.offset = (unsigned int  )211;
    sqlstm.cud = sqlcud0;
    sqlstm.sqlest = (unsigned char  *)&sqlca;
    sqlstm.sqlety = (unsigned short)4352;
@@ -1011,13 +1172,13 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
 {
     struct sqlexd sqlstm;
     sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 4;
+    sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select id ,pw into :b0,:b1  from user_info where id='admi\
 n'";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )207;
+    sqlstm.offset = (unsigned int  )242;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -1085,11 +1246,11 @@ void sql_error(char *msg)
 {
     struct sqlexd sqlstm;
     sqlstm.sqlvsn = 13;
-    sqlstm.arrsiz = 4;
+    sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )230;
+    sqlstm.offset = (unsigned int  )265;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
