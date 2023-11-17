@@ -289,7 +289,6 @@ void signup() {
     while(1){
         gotoxy(34, 10);
         pw_input(temp_pw);
-        printf("\n");
         gotoxy(34, 13);
         pw_input(temp_pw2);
         if (strcmp(temp_pw, temp_pw2) == 0) {
@@ -367,42 +366,35 @@ void pw_input(char *pw) {
 }
 
 void login(struct UserInfo *user) {
+        system("cls");
+        printf("--------------------------------------------------------------------------------\n");
+        printf("                                      로그인\n");
+        printf("--------------------------------------------------------------------------------\n");
+        printf("                                  [ 로그인 정보 ]\n\n\n\n");
+        printf("\n\n");
+        printf("                             ID:\n");
+        printf("\n\n\n");
+        printf("                             PW:\n");
+        printf("\n\n\n\n\n\n\n\n\n");
+        printf("--------------------------------------------------------------------------------\n");
+
     while(1){
-        system("cls"); // 콘솔화면 초기화
-        printf("***********************************\n");
-        printf("*            로그인 화면          *\n");
-        printf("***********************************\n");
-        printf("ID: ");
+        gotoxy(34, 9);
         scanf("%s", user->id);
-
-        printf("PW: ");
-        int i = 0;
-        while (1) {
-            char ch = getch();  // 사용자 입력을 받음
-            if (ch == '\r' || ch == '\n') {
-                // Enter 키가 입력되면 종료
-                break;
-            } else if (ch == 8 && i > 0) {
-                // Backspace 키가 입력되면 이전 문자 삭제
-                printf("\b \b");
-                user->pw[--i] = '\0';
-            } else if (ch != 8) {
-                // 비밀번호를 배열에 저장하고 '*' 출력
-                user->pw[i++] = ch;
-                printf("*");
-            }
-        }
-
-        // NULL 문자를 추가하여 문자열 완성
-        user->pw[i] = '\0';
-        printf("%s\n",user->pw);
+        gotoxy(34, 13);
+        pw_input(user->pw);
 
         if (check_user_info(user) == 0) {
-            printf("ID나 PW를 확인해주세요.\n");
-            getch();
+            gotoxy(0, 5);
+            printf("                              ID나 PW를 확인해주세요.\n");
+            gotoxy(0, 9);
+            printf("                             ID:                             ");
+            gotoxy(0, 13);
+            printf("                             PW:                             ");
         } else {
             login_state = true;
             break;
+
         }
     }
 }
