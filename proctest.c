@@ -154,7 +154,7 @@ static const short sqlcud0[] =
 
 
 // win32 Visual C 컴파일시 추가
-_putenv("NLS_LANG=American_America.KO16KSC5601");
+//_putenv("NLS_LANG=American_America.KO16KSC5601");
 // 프로그램 가장 첫 줄에 추가할 것
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -433,9 +433,30 @@ void main()
         if (login_state){
             printf("%s\n",user.id);
         }
-        printf("***********************************\n");
-        printf("*           메인 화면             *\n");
-        printf("***********************************\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                게시판 시스템\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                  [ 메인화면 ]\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("                          login / logout / signup / write                     \n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("--------------------------------------------------------------------------------\n");
         // Get_tuple();
         char op[20];
         scanf("%s", op);
@@ -598,9 +619,30 @@ void signup() {
     int id_pass = 0;
     while (1){  
         system("cls"); // 콘솔화면 초기화
-        printf("***********************************\n");
-        printf("*            회원가입 화면        *\n");
-        printf("***********************************\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                게시판 시스템\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                 [ 회원가입 ]\n");
+        printf("\n");
+        printf("                        아이디  :                                             \n");
+        printf("\n");
+        printf("\n");
+        printf("                       비밀번호 :                                             \n");
+        printf("\n");
+        printf("\n");
+        printf("                  비밀번호 확인 :                                             \n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("--------------------------------------------------------------------------------\n");
         if (id_pass == 0){
             if (i>=1)
                 printf("ID가 중복됩니다!\n");
@@ -756,9 +798,30 @@ void pw_input(char *pw) {
 void login(struct UserInfo *user) {
     while(1){
         system("cls"); // 콘솔화면 초기화
-        printf("***********************************\n");
-        printf("*            로그인 화면          *\n");
-        printf("***********************************\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                게시판 시스템\n");
+        printf("------------------------------------------------------------------------------\n");
+        printf("                                  [ 로그인 ]\n");
+        printf("\n");
+        printf("                        아이디  :                                             \n");
+        printf("\n");
+        printf("\n");
+        printf("                       비밀번호 :                                             \n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("--------------------------------------------------------------------------------\n");
         printf("ID: ");
         scanf("%s", user->id);
 
@@ -885,10 +948,10 @@ d pw=:b2)";
 void DB_connect()
 {
    /* 본인 계정이름으로 바꾸어 쓸 것 */
-   strcpy((char *)uid.arr,"a20193209@//sedb.deu.ac.kr:1521/orcl");
+   strcpy((char *)uid.arr,"a20192162@//sedb.deu.ac.kr:1521/orcl");
    uid.len = (short) strlen((char *)uid.arr);
    /* 본인 계정 암호로 바꾸어 쓸 것 */
-   strcpy((char *)pwd.arr,"20193209");
+   strcpy((char *)pwd.arr,"20192162");
    pwd.len = (short) strlen((char *)pwd.arr);
 
    /* EXEC SQL CONNECT :uid IDENTIFIED BY :pwd; */ 
