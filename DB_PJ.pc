@@ -130,11 +130,30 @@ void main()
         if (login_state){
             printf("%s\n",user.id);
         }
+        // 가로 80, 세로 24
         printf("--------------------------------------------------------------------------------\n");
         printf("                                    메인화면\n");
         printf("--------------------------------------------------------------------------------\n");
-        //printf("                                    메인화면\n");
-        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        printf("                                   [ 명령어 ]\n");
+        printf("\n");
+        printf("\n");
+        printf("                                     login\n");
+        printf("\n");
+        printf("                                     logout\n");
+        printf("\n");
+        printf("                                     singup\n");
+        printf("\n");
+        printf("                                     write\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
         printf("--------------------------------------------------------------------------------\n");
         printf("> ");
         // Get_tuple();
