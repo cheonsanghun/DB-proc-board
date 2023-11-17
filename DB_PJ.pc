@@ -123,18 +123,16 @@ void main()
     // 유저 정보 
     struct UserInfo user;
 	DB_connect();
-
-	// getch();
-    while(1){
+    int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태
+    while(true){
         system("cls"); // 콘솔화면 초기화
-        if (login_state){
-            printf("%s\n",user.id);
-        }
         // 가로 80, 세로 24
         printf("--------------------------------------------------------------------------------\n");
         printf("                                    메인화면\n");
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
+        printf("\n");
+        if(msg_state==1){printf("                           명령어를 찾을 수 없습니다.\n");}else if (msg_state==2){gotoxy(0 ,5);printf("                               로그인 상태입니다.\n");}else{printf("\n");}
         printf("\n");
         printf("\n");
         printf("                                     login\n");
@@ -151,20 +149,18 @@ void main()
         printf("\n");
         printf("\n");
         printf("\n");
-        printf("\n");
-        printf("\n");
-        printf("\n");
+        if (login_state){gotoxy(0, 22);printf("%s\n",user.id);}else{printf("\n");}
         printf("--------------------------------------------------------------------------------\n");
         printf("> ");
-        // Get_tuple();
+        msg_state = 0;
         char op[20];
+        gotoxy(2, 24);
         scanf("%s", op);
         if (strcmp(op, "login") == 0) {
             if (!login_state)
                 login(&user);
             else{
-                printf("이미 로그인한 상태입니다.\n");
-                getch(); 
+                msg_state = 2;
             }
         } else if (strcmp(op, "signup") == 0) {
             signup();
@@ -172,16 +168,14 @@ void main()
             login_state = false;
             user.id[0] = '\0';
             user.pw[0] = '\0';
-            printf("로그아웃합니다.\n");
-            getch(); 
+            msg_state = 0;
         } else if(strcmp(op, "write") == 0){
             text_input();
         } else if(strcmp(op, "a") == 0){
             get_text();
         }
-         else {
-            printf("명령어가 없습니다.\n");
-            getch(); 
+        else {
+            msg_state = 1;
         }
     }
 }
