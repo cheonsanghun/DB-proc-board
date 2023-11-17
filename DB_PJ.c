@@ -60,16 +60,16 @@ static struct sqltdss sqltds =
 struct sqlcxp
 {
   unsigned short fillen;
-           char  filnam[14];
+           char  filnam[11];
 };
 static const struct sqlcxp sqlfpn =
 {
-    13,
-    ".\\proctest.pc"
+    10,
+    ".\\DB_PJ.pc"
 };
 
 
-static unsigned int sqlctx = 539531;
+static unsigned int sqlctx = 65355;
 
 
 static struct sqlexd {
@@ -138,24 +138,28 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,34,0,9,68,0,0,0,0,0,1,0,
-20,0,0,1,0,0,13,72,0,0,1,0,0,1,0,2,9,0,0,
-39,0,0,1,0,0,15,80,0,0,0,0,0,1,0,
-54,0,0,2,30,0,3,107,0,0,1,1,0,1,0,1,9,0,0,
-73,0,0,3,0,0,29,109,0,0,0,0,0,1,0,
-88,0,0,4,54,0,4,229,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-111,0,0,5,39,0,3,300,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-134,0,0,6,0,0,29,302,0,0,0,0,0,1,0,
-149,0,0,7,67,0,4,390,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-176,0,0,0,0,0,27,407,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-207,0,0,9,59,0,4,434,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-230,0,0,10,0,0,31,463,0,0,0,0,0,1,0,
+5,0,0,1,34,0,9,70,0,0,0,0,0,1,0,
+20,0,0,1,0,0,13,74,0,0,1,0,0,1,0,2,9,0,0,
+39,0,0,1,0,0,15,82,0,0,0,0,0,1,0,
+54,0,0,2,30,0,3,109,0,0,1,1,0,1,0,1,9,0,0,
+73,0,0,3,0,0,29,111,0,0,0,0,0,1,0,
+88,0,0,4,54,0,4,235,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+111,0,0,5,39,0,3,325,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+134,0,0,6,0,0,29,327,0,0,0,0,0,1,0,
+149,0,0,7,67,0,4,415,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+176,0,0,0,0,0,27,432,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+207,0,0,9,59,0,4,459,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+230,0,0,10,0,0,31,488,0,0,0,0,0,1,0,
 };
 
 
+<<<<<<< HEAD:DB_PJ.c
+
+=======
 // win32 Visual C 컴파일시 추가
 //_putenv("NLS_LANG=American_America.KO16KSC5601");
 // 프로그램 가장 첫 줄에 추가할 것
+>>>>>>> c15a9c9c729e7933f96cc947b5d0887151d4b3eb:proctest.c
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdlib.h>
@@ -165,9 +169,6 @@ static const short sqlcud0[] =
 #include <string.h>
 #include <conio.h>
 #include <stdbool.h>
-
-// 콘솔 작업을 위한 헤더
-#include <windows.h>
 
 // 텍스트 입력 헤더
 #include <locale.h>
@@ -179,6 +180,13 @@ static const short sqlcud0[] =
 #include <sqlca.h>
 #include <sqlcpr.h>
 
+
+/*---------------  화면 커서 위치 제어 ----------------------*/
+#include < windows.h >
+void gotoxy(int x, int y) ;
+void getxy(int *x, int *y) ;
+void clrscr(void) ;
+/*-----------------------------------------------------------*/
 
 void DB_connect();
 void Get_tuple();
@@ -433,6 +441,15 @@ void main()
         if (login_state){
             printf("%s\n",user.id);
         }
+<<<<<<< HEAD:DB_PJ.c
+        printf("--------------------------------------------------------------------------------\n");
+        printf("                                    메인화면\n");
+        printf("--------------------------------------------------------------------------------\n");
+        //printf("                                    메인화면\n");
+        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        printf("--------------------------------------------------------------------------------\n");
+        printf("> ");
+=======
         printf("------------------------------------------------------------------------------\n");
         printf("                                게시판 시스템\n");
         printf("------------------------------------------------------------------------------\n");
@@ -457,6 +474,7 @@ void main()
         printf("\n");
         printf("\n");
         printf("--------------------------------------------------------------------------------\n");
+>>>>>>> c15a9c9c729e7933f96cc947b5d0887151d4b3eb:proctest.c
         // Get_tuple();
         char op[20];
         scanf("%s", op);
@@ -615,6 +633,34 @@ void signup() {
     char temp_id[20];   
     char temp_pw[20];
     char temp_pw2[20];
+<<<<<<< HEAD:DB_PJ.c
+
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                    회원가입\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                  [ 가입정보 ]\n");
+    printf("\n\n\n");
+    printf("                             ID :\n");
+    printf("\n\n");
+    printf("                             PW :\n");
+    printf("\n\n");
+    printf("                   PW (CONFIRM) : \n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+
+    while (true){
+        gotoxy(34, 7);
+        scanf("%s", temp_id);
+
+        if (check_id(temp_id) == 0){
+            break;
+        } else {
+            gotoxy(32, 5);
+            printf("ID가 중복됩니다!");
+            gotoxy(0, 7);
+            printf("                             ID :                             \n");
+=======
     int i = 0;
     int id_pass = 0;
     while (1){  
@@ -667,12 +713,37 @@ void signup() {
                 getch(); 
             }
             //break;
+>>>>>>> c15a9c9c729e7933f96cc947b5d0887151d4b3eb:proctest.c
         }
     }
-    
+
+    while(1){
+        gotoxy(34, 10);
+        pw_input(temp_pw);
+        printf("\n");
+        gotoxy(34, 13);
+        pw_input(temp_pw2);
+        if (strcmp(temp_pw, temp_pw2) == 0) {
+            break;
+        } else {
+            gotoxy(26, 5);
+            printf("비밀번호가 일치하지 않습니다.");
+            gotoxy(0, 10);
+            printf("                             PW :                             ");
+            gotoxy(0, 13);
+            printf("                   PW (CONFIRM) :                              ");
+        }        
+    }
     save_user_info(temp_id, temp_pw);
-    printf("\n회원가입이 완료되었습니다!\n");
-    getch(); 
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                    회원가입\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                  [ 가입정보 ]\n\n\n\n");
+    printf("                           회원가입이 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
 }
 
 void save_user_info(const char *id, const char *pw){
@@ -698,8 +769,8 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
     strcpy((char *)pw_var.arr, pw);
     pw_var.len = strlen((char *)pw_var.arr);
 
-    printf("%s, %s", id_var.arr, pw_var.arr);
-    getch();
+    // printf("%s, %s", id_var.arr, pw_var.arr);
+    // getch();
 
     /* 실행시킬 SQL 문장*/
     /* EXEC SQL INSERT INTO user_info VALUES (:id_var, :pw_var); */ 
@@ -1134,3 +1205,30 @@ void sql_error(char *msg)
 
 }
 
+/*---------------  화면 커서 제어 함수 --------------------*/
+#define STD_HANDLE GetStdHandle(STD_OUTPUT_HANDLE)
+
+void gotoxy(int x, int y)
+{
+    COORD Cur= {(SHORT)x, (SHORT) y};
+
+    SetConsoleCursorPosition(STD_HANDLE, Cur);
+}
+
+void getxy(int *x, int *y)
+{
+    CONSOLE_SCREEN_BUFFER_INFO Buf ;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Buf);
+    *x = (int)Buf.dwCursorPosition.X ;
+    *y = (int)Buf.dwCursorPosition.Y ;
+ 
+}
+
+void clrscr(void)
+{
+    COORD Cur= {0, 0};
+    unsigned long dwLen;
+
+    FillConsoleOutputCharacter(STD_HANDLE, ' ', 80*25, Cur, &dwLen);
+}
