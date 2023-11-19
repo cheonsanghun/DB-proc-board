@@ -63,12 +63,12 @@ bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
 
-void main(){
+void main() {
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
-	DB_connect();
+    DB_connect();
     int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태, 3: 게스트 상태
-    while(true){
+    while (true) {
         system("cls"); // 콘솔화면 초기화
         // 가로 80, 세로 24
         printf("--------------------------------------------------------------------------------\n");
@@ -76,18 +76,20 @@ void main(){
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
         printf("\n");
-        if(msg_state==1){
+        if (msg_state == 1) {
             printf("                           명령어를 찾을 수 없습니다.\n");
-        }else if (msg_state==2){
-            gotoxy(0 ,5);
+        }
+        else if (msg_state == 2) {
+            gotoxy(0, 5);
             printf("                               로그인 상태입니다.\n");
-        }else if(msg_state==3){
-            gotoxy(0 ,5);
+        }
+        else if (msg_state == 3) {
+            gotoxy(0, 5);
             printf("                               게스트 모드입니다.\n");
-        }else{
+        }
+        else {
             printf("\n");
         }
-        printf("\n");
         printf("\n");
         printf("                                     login\n");
         printf("\n");
@@ -99,11 +101,14 @@ void main(){
         printf("\n");
         printf("                                     delete\n");
         printf("\n");
+        printf("                                     withdraw\n");
+        printf("\n");
+        printf("                                     pwupdate\n");
         printf("\n");
         printf("\n");
-        printf("\n");
-        printf("\n");
-        if (login_state){gotoxy(0, 22);printf("%s\n",user.id);}else{printf("\n");}
+
+        if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
+        else { printf("\n"); }
         printf("--------------------------------------------------------------------------------\n");
         printf("> ");
         msg_state = 0;
@@ -113,24 +118,45 @@ void main(){
         if (strcmp(op, "login") == 0) {
             if (!login_state)
                 login();
-            else{
+            else {
                 msg_state = 2;
             }
-        } else if (strcmp(op, "signup") == 0) {
+        }
+        else if (strcmp(op, "signup") == 0) {
             signup();
-        } else if(strcmp(op, "logout") == 0){
+        }
+        else if (strcmp(op, "logout") == 0) {
             login_state = false;
             user.id[0] = '\0';
             user.pw[0] = '\0';
             msg_state = 0;
-        } else if(strcmp(op, "write") == 0){
-            if(!login_state){
+        }
+        else if (strcmp(op, "write") == 0) {
+            if (!login_state) {
                 msg_state = 3;
-            } else{
+            }
+            else {
                 text_input();
             }
-        } else if(strcmp(op, "delete") == 0){
+        }
+        else if (strcmp(op, "delete") == 0) {
             delete_post();
+        }
+        else if (strcmp(op, "withdraw") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                delete_id();
+            }
+        }
+        else if (strcmp(op, "pwupdate") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                pw_update();
+            }
         }
         else {
             msg_state = 1;
