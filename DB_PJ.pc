@@ -41,6 +41,8 @@ void input_post(const char* title, const wchar_t* w_text);
 int get_post_id();
 void delete_post();
 int get_post_info(int post_id, char* title, char* id, int* del);
+void delete_id();
+void pw_update();
 
 EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR uid[80];
@@ -627,6 +629,156 @@ int check_user_info() {
             WHERE  id = :id AND pw = :pw;
 
     return result_count;  // 결과 값 반환 (0 또는 1)
+}
+
+// 회원정보 삭제 처리
+void delete_id() {
+
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 회원정보 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 회원정보 ]\n");
+    printf("\n\n\n");
+    printf("                               ID : %s\n", user.id);
+    printf("\n\n");
+    printf("                          PW 확인 :\n");
+    printf("\n\n");
+    printf("                        PW 재확인 :\n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
+
+    char temp_pw[20];
+    char temp_pw2[20];
+
+    while (true) {
+        gotoxy(36, 10);
+        pw_input(temp_pw);
+
+        if (strcmp(temp_pw, "exit") == 0) {
+            return;
+        }
+
+        gotoxy(36, 13);
+        pw_input(temp_pw2);
+
+
+        if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, user.pw) == 0)) {
+            break;
+        }
+        else {
+            gotoxy(26, 5);
+            printf("비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    EXEC SQL BEGIN DECLARE SECTION;
+        varchar v_user_id[20];
+    EXEC SQL END DECLARE SECTION;
+
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    // v_user_id에 user.id를 복사
+    strncpy((char*)v_user_id.arr, user.id, 20);
+    v_user_id.len = strlen((char*)v_user_id.arr);
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL DELETE FROM user_info WHERE id = :v_user_id;
+
+
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 회원정보 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 회원정보 ]\n\n\n\n");;
+    printf("                             삭제가 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
+}
+
+// 비밀번호 변경 처리
+void pw_update() {
+
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 비밀번호 변경\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("\n");
+    printf("\n\n\n");
+    printf("                          현재 PW :\n");
+    printf("\n\n");
+    printf("                        수정할 PW :\n");
+    printf("\n\n");
+    printf("                 수정할 PW 재확인 :\n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
+
+    char temp_pw[20];
+    char temp_pw2[20];
+    char temp_pw3[20];
+
+    while (true) {
+        gotoxy(36, 7);
+        pw_input(temp_pw);
+
+        if (strcmp(temp_pw, "exit") == 0) {
+            return;
+        }
+
+        gotoxy(36, 10);
+        pw_input(temp_pw2);
+
+        gotoxy(36, 13);
+        pw_input(temp_pw3);
+
+
+        if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, temp_pw3) == 0)) {
+            break;
+        }
+        else {
+            gotoxy(26, 5);
+            printf("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    EXEC SQL BEGIN DECLARE SECTION;
+        varchar v_user_id[20];
+        varchar v_user_pw[20];
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    // v_user_pw에 temp_pw2를 복사
+    strncpy((char*)v_user_pw.arr, temp_pw2, 20);
+    v_user_pw.len = strlen((char*)v_user_pw.arr);
+
+    // v_user_id에 user.id를 복사
+    strncpy((char*)v_user_id.arr, user.id, 20);
+    v_user_id.len = strlen((char*)v_user_id.arr);
+
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL UPDATE user_info SET pw = :v_user_pw WHERE id = :v_user_id;
+
+    EXEC SQL COMMIT;
+
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 비밀번호 변경\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("\n\n\n\n");
+    printf("                             변경이 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
 }
 
 void DB_connect()
