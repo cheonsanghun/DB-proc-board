@@ -59,6 +59,7 @@ struct UserInfo {
 };
 
 bool login_state = false;
+int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태, 3: 게스트 상태
 
 // 유저 정보 
 struct UserInfo user;
@@ -67,7 +68,6 @@ void main() {
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
     DB_connect();
-    int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태, 3: 게스트 상태
     while (true) {
         system("cls"); // 콘솔화면 초기화
         // 가로 80, 세로 24
@@ -691,6 +691,10 @@ void delete_id() {
 
 
         if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, user.pw) == 0)) {
+            login_state = false;
+            user.id[0] = '\0';
+            user.pw[0] = '\0';
+            msg_state = 0;
             break;
         }
         else {
@@ -714,6 +718,8 @@ void delete_id() {
 
     /* 실행시킬 SQL 문장*/
     EXEC SQL DELETE FROM user_info WHERE id = :v_user_id;
+
+    EXEC SQL COMMIT;
 
 
     system("cls");
