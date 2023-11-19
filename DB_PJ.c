@@ -135,19 +135,22 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,67,0,4,152,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
-36,0,0,2,40,0,5,250,0,0,1,1,0,1,0,1,3,0,0,
-55,0,0,3,0,0,29,252,0,0,0,0,0,1,0,
-70,0,0,4,47,0,4,274,0,0,1,0,0,1,0,2,3,0,0,
-89,0,0,5,73,0,3,323,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
-124,0,0,6,0,0,29,325,0,0,0,0,0,1,0,
-139,0,0,7,54,0,4,439,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-162,0,0,8,39,0,3,532,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-185,0,0,9,0,0,29,534,0,0,0,0,0,1,0,
-200,0,0,10,67,0,4,624,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-227,0,0,0,0,0,27,641,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-258,0,0,12,59,0,4,668,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-281,0,0,13,0,0,31,697,0,0,0,0,0,1,0,
+5,0,0,1,67,0,4,180,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
+36,0,0,2,40,0,5,278,0,0,1,1,0,1,0,1,3,0,0,
+55,0,0,3,0,0,29,280,0,0,0,0,0,1,0,
+70,0,0,4,47,0,4,302,0,0,1,0,0,1,0,2,3,0,0,
+89,0,0,5,73,0,3,351,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+124,0,0,6,0,0,29,353,0,0,0,0,0,1,0,
+139,0,0,7,54,0,4,467,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+162,0,0,8,39,0,3,560,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+185,0,0,9,0,0,29,562,0,0,0,0,0,1,0,
+200,0,0,10,67,0,4,652,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+227,0,0,11,36,0,2,716,0,0,1,1,0,1,0,1,9,0,0,
+246,0,0,12,41,0,5,795,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+269,0,0,13,0,0,29,797,0,0,0,0,0,1,0,
+284,0,0,0,0,0,27,819,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+315,0,0,15,59,0,4,846,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+338,0,0,16,0,0,31,875,0,0,0,0,0,1,0,
 };
 
 
@@ -194,6 +197,8 @@ void input_post(const char* title, const wchar_t* w_text);
 int get_post_id();
 void delete_post();
 int get_post_info(int post_id, char* title, char* id, int* del);
+void delete_id();
+void pw_update();
 
 /* EXEC SQL BEGIN DECLARE SECTION; */ 
 
@@ -220,12 +225,12 @@ bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
 
-void main(){
+void main() {
     // 인코딩 설정
     _putenv("NLS_LANG=American_America.KO16KSC5601");
-	DB_connect();
+    DB_connect();
     int msg_state = 0;// 1: 명령어 없음, 2: 이미 로그인 상태, 3: 게스트 상태
-    while(true){
+    while (true) {
         system("cls"); // 콘솔화면 초기화
         // 가로 80, 세로 24
         printf("--------------------------------------------------------------------------------\n");
@@ -233,18 +238,20 @@ void main(){
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
         printf("\n");
-        if(msg_state==1){
+        if (msg_state == 1) {
             printf("                           명령어를 찾을 수 없습니다.\n");
-        }else if (msg_state==2){
-            gotoxy(0 ,5);
+        }
+        else if (msg_state == 2) {
+            gotoxy(0, 5);
             printf("                               로그인 상태입니다.\n");
-        }else if(msg_state==3){
-            gotoxy(0 ,5);
+        }
+        else if (msg_state == 3) {
+            gotoxy(0, 5);
             printf("                               게스트 모드입니다.\n");
-        }else{
+        }
+        else {
             printf("\n");
         }
-        printf("\n");
         printf("\n");
         printf("                                     login\n");
         printf("\n");
@@ -256,11 +263,14 @@ void main(){
         printf("\n");
         printf("                                     delete\n");
         printf("\n");
+        printf("                                     withdraw\n");
+        printf("\n");
+        printf("                                     pwupdate\n");
         printf("\n");
         printf("\n");
-        printf("\n");
-        printf("\n");
-        if (login_state){gotoxy(0, 22);printf("%s\n",user.id);}else{printf("\n");}
+
+        if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
+        else { printf("\n"); }
         printf("--------------------------------------------------------------------------------\n");
         printf("> ");
         msg_state = 0;
@@ -270,24 +280,45 @@ void main(){
         if (strcmp(op, "login") == 0) {
             if (!login_state)
                 login();
-            else{
+            else {
                 msg_state = 2;
             }
-        } else if (strcmp(op, "signup") == 0) {
+        }
+        else if (strcmp(op, "signup") == 0) {
             signup();
-        } else if(strcmp(op, "logout") == 0){
+        }
+        else if (strcmp(op, "logout") == 0) {
             login_state = false;
             user.id[0] = '\0';
             user.pw[0] = '\0';
             msg_state = 0;
-        } else if(strcmp(op, "write") == 0){
-            if(!login_state){
+        }
+        else if (strcmp(op, "write") == 0) {
+            if (!login_state) {
                 msg_state = 3;
-            } else{
+            }
+            else {
                 text_input();
             }
-        } else if(strcmp(op, "delete") == 0){
+        }
+        else if (strcmp(op, "delete") == 0) {
             delete_post();
+        }
+        else if (strcmp(op, "withdraw") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                delete_id();
+            }
+        }
+        else if (strcmp(op, "pwupdate") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                pw_update();
+            }
         }
         else {
             msg_state = 1;
@@ -1234,6 +1265,266 @@ d pw=:b2)";
     return result_count;  // 결과 값 반환 (0 또는 1)
 }
 
+// 회원정보 삭제 처리
+void delete_id() {
+
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 회원정보 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 회원정보 ]\n");
+    printf("\n\n\n");
+    printf("                               ID : %s\n", user.id);
+    printf("\n\n");
+    printf("                          PW 확인 :\n");
+    printf("\n\n");
+    printf("                        PW 재확인 :\n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
+
+    char temp_pw[20];
+    char temp_pw2[20];
+
+    while (true) {
+        gotoxy(36, 10);
+        pw_input(temp_pw);
+
+        if (strcmp(temp_pw, "exit") == 0) {
+            return;
+        }
+
+        gotoxy(36, 13);
+        pw_input(temp_pw2);
+
+
+        if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, user.pw) == 0)) {
+            break;
+        }
+        else {
+            gotoxy(26, 5);
+            printf("비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        /* varchar v_user_id[20]; */ 
+struct { unsigned short len; unsigned char arr[20]; } v_user_id;
+
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+
+    /* Register sql_error() as the error handler. */
+    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
+
+
+    // v_user_id에 user.id를 복사
+    strncpy((char*)v_user_id.arr, user.id, 20);
+    v_user_id.len = strlen((char*)v_user_id.arr);
+
+    /* 실행시킬 SQL 문장*/
+    /* EXEC SQL DELETE FROM user_info WHERE id = :v_user_id; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "delete  from user_info  where id=:b0";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )227;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_user_id;
+    sqlstm.sqhstl[0] = (unsigned int  )22;
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 회원정보 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 회원정보 ]\n\n\n\n");;
+    printf("                             삭제가 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
+}
+
+// 비밀번호 변경 처리
+void pw_update() {
+
+    system("cls"); // 콘솔화면 초기화
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 비밀번호 변경\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("\n");
+    printf("\n\n\n");
+    printf("                          현재 PW :\n");
+    printf("\n\n");
+    printf("                        수정할 PW :\n");
+    printf("\n\n");
+    printf("                 수정할 PW 재확인 :\n");
+    printf("\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("나가려면 exit를 입력하세요.");
+
+    char temp_pw[20];
+    char temp_pw2[20];
+    char temp_pw3[20];
+
+    while (true) {
+        gotoxy(36, 7);
+        pw_input(temp_pw);
+
+        if (strcmp(temp_pw, "exit") == 0) {
+            return;
+        }
+
+        gotoxy(36, 10);
+        pw_input(temp_pw2);
+
+        gotoxy(36, 13);
+        pw_input(temp_pw3);
+
+
+        if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, temp_pw3) == 0)) {
+            break;
+        }
+        else {
+            gotoxy(26, 5);
+            printf("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        /* varchar v_user_id[20]; */ 
+struct { unsigned short len; unsigned char arr[20]; } v_user_id;
+
+        /* varchar v_user_pw[20]; */ 
+struct { unsigned short len; unsigned char arr[20]; } v_user_pw;
+
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+    /* Register sql_error() as the error handler. */
+    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
+
+
+    // v_user_pw에 temp_pw2를 복사
+    strncpy((char*)v_user_pw.arr, temp_pw2, 20);
+    v_user_pw.len = strlen((char*)v_user_pw.arr);
+
+    // v_user_id에 user.id를 복사
+    strncpy((char*)v_user_id.arr, user.id, 20);
+    v_user_id.len = strlen((char*)v_user_id.arr);
+
+
+    /* 실행시킬 SQL 문장*/
+    /* EXEC SQL UPDATE user_info SET pw = :v_user_pw WHERE id = :v_user_id; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "update user_info  set pw=:b0 where id=:b1";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )246;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_user_pw;
+    sqlstm.sqhstl[0] = (unsigned int  )22;
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqhstv[1] = (         void  *)&v_user_id;
+    sqlstm.sqhstl[1] = (unsigned int  )22;
+    sqlstm.sqhsts[1] = (         int  )0;
+    sqlstm.sqindv[1] = (         void  *)0;
+    sqlstm.sqinds[1] = (         int  )0;
+    sqlstm.sqharm[1] = (unsigned int  )0;
+    sqlstm.sqadto[1] = (unsigned short )0;
+    sqlstm.sqtdso[1] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    /* EXEC SQL COMMIT; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )269;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 비밀번호 변경\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("\n\n\n\n");
+    printf("                             변경이 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
+}
+
 void DB_connect()
 {
    /* 본인 계정이름으로 바꾸어 쓸 것 */
@@ -1252,7 +1543,7 @@ void DB_connect()
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.iters = (unsigned int  )10;
-   sqlstm.offset = (unsigned int  )227;
+   sqlstm.offset = (unsigned int  )284;
    sqlstm.cud = sqlcud0;
    sqlstm.sqlest = (unsigned char  *)&sqlca;
    sqlstm.sqlety = (unsigned short)4352;
@@ -1339,7 +1630,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
     sqlstm.stmt = "select id ,pw into :b0,:b1  from user_info where id='admi\
 n'";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )258;
+    sqlstm.offset = (unsigned int  )315;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -1411,7 +1702,7 @@ void sql_error(char *msg)
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )281;
+    sqlstm.offset = (unsigned int  )338;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
