@@ -369,8 +369,8 @@ void input_post(const char* title, const wchar_t* w_text) {
 
     EXEC SQL COMMIT;
     
-    /* 확인용: 오류 코드 출력 */
-    printf("SQLCODE: %d\n", sqlca.sqlcode);
+    // /* 확인용: 오류 코드 출력 */
+    // printf("SQLCODE: %d\n", sqlca.sqlcode);
     free(pStr);
 }
 
@@ -834,20 +834,20 @@ void pw_update() {
 //게시물 목록
 void Post_Inquiry_Display()
 {
-	_putenv("NLS_LANG=American_America.KO16KSC5601"); //한글사용
 
-	DB_connect();
-	system("cls"); // 콘솔화면 초기화
-    	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
-	
 int offset = 0;
 
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
-    Post_Inquiry(offset);
+
 
     while (1) {
+        system("cls"); // 콘솔화면 초기화
+    	printf("--------------------------------------------------------------------------------\n");
+       	printf("                                   [게시물 목록]\n");
+    	printf("--------------------------------------------------------------------------------\n");
+	    
+        Post_Inquiry(offset);
+
         char input[10];
         printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제입력하세요: ");
         scanf("%s", input);
@@ -856,38 +856,35 @@ int offset = 0;
             main();
             break;
         } else if (strcmp(input, "2") == 0) {
-	    system("cls");
-	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
+            system("cls");
+            printf("--------------------------------------------------------------------------------\n");
+            printf("                                   [게시물 목록]\n");
+            printf("--------------------------------------------------------------------------------\n");
             offset += 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
-	} else if (strcmp(input, "3") == 0) {
-	    system("cls");
-	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
+	    } else if (strcmp(input, "3") == 0) {
+            system("cls");
+            printf("--------------------------------------------------------------------------------\n");
+            printf("                                   [게시물 목록]\n");
+            printf("--------------------------------------------------------------------------------\n");
             offset -= 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
         }else if (strcmp(input, "4") == 0){
             text_input();
-            break;
         }
         else if (strcmp(input, "5") == 0){
             delete_post();
-            break;
-            break;
         }
         else {
             printf("입력이 올바르지 않습니다.\n");
         }
+        // EXEC SQL COMMIT WORK RELEASE ;
     }
 
-
-	EXEC SQL COMMIT WORK RELEASE ;
-	getch();
-
+	
 }
+
+
 //게시물 목록 가져오기
 void Post_Inquiry(int offset) {
 

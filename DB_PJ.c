@@ -129,7 +129,7 @@ static const int IAPFAIL = 1403;
 static const int IAPFTL  = 535;
 extern void sqliem(unsigned char *, signed int *);
 
- static const char *sq0016 = 
+ static const char *sq0015 = 
 "select POST_ID ,TITLE ,ID ,DEL  from (select POST_ID ,TITLE ,ID ,DEL ,ROWNUM\
  RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where DEL=0) where ROWNUM\
 <=(:b0+10)) where RN>:b0           ";
@@ -154,13 +154,12 @@ static const short sqlcud0[] =
 246,0,0,12,0,0,29,739,0,0,0,0,0,1,0,
 261,0,0,13,41,0,5,818,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
 284,0,0,14,0,0,29,820,0,0,0,0,0,1,0,
-299,0,0,15,0,0,30,887,0,0,0,0,0,1,0,
-314,0,0,16,189,0,9,919,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
-337,0,0,16,0,0,13,926,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-368,0,0,16,0,0,15,951,0,0,0,0,0,1,0,
-383,0,0,0,0,0,27,975,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-414,0,0,18,59,0,4,1002,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-437,0,0,19,0,0,31,1031,0,0,0,0,0,1,0,
+299,0,0,15,189,0,9,916,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
+322,0,0,15,0,0,13,923,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+353,0,0,15,0,0,15,948,0,0,0,0,0,1,0,
+368,0,0,0,0,0,27,972,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+399,0,0,17,59,0,4,999,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+422,0,0,18,0,0,31,1028,0,0,0,0,0,1,0,
 };
 
 
@@ -807,8 +806,8 @@ struct { unsigned short len; unsigned char arr[2000]; } v_text;
 
 
     
-    /* 확인용: 오류 코드 출력 */
-    printf("SQLCODE: %d\n", sqlca.sqlcode);
+    // /* 확인용: 오류 코드 출력 */
+    // printf("SQLCODE: %d\n", sqlca.sqlcode);
     free(pStr);
 }
 
@@ -1582,20 +1581,20 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_pw;
 //게시물 목록
 void Post_Inquiry_Display()
 {
-	_putenv("NLS_LANG=American_America.KO16KSC5601"); //한글사용
 
-	DB_connect();
-	system("cls"); // 콘솔화면 초기화
-    	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
-	
 int offset = 0;
 
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
-    Post_Inquiry(offset);
+
 
     while (1) {
+        system("cls"); // 콘솔화면 초기화
+    	printf("--------------------------------------------------------------------------------\n");
+       	printf("                                   [게시물 목록]\n");
+    	printf("--------------------------------------------------------------------------------\n");
+	    
+        Post_Inquiry(offset);
+
         char input[10];
         printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제입력하세요: ");
         scanf("%s", input);
@@ -1604,56 +1603,35 @@ int offset = 0;
             main();
             break;
         } else if (strcmp(input, "2") == 0) {
-	    system("cls");
-	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
+            system("cls");
+            printf("--------------------------------------------------------------------------------\n");
+            printf("                                   [게시물 목록]\n");
+            printf("--------------------------------------------------------------------------------\n");
             offset += 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
-	} else if (strcmp(input, "3") == 0) {
-	    system("cls");
-	printf("--------------------------------------------------------------------------------\n");
-   	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
+	    } else if (strcmp(input, "3") == 0) {
+            system("cls");
+            printf("--------------------------------------------------------------------------------\n");
+            printf("                                   [게시물 목록]\n");
+            printf("--------------------------------------------------------------------------------\n");
             offset -= 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
         }else if (strcmp(input, "4") == 0){
             text_input();
-            break;
         }
         else if (strcmp(input, "5") == 0){
             delete_post();
-            break;
-            break;
         }
         else {
             printf("입력이 올바르지 않습니다.\n");
         }
+        // EXEC SQL COMMIT WORK RELEASE ;
     }
 
-
-	/* EXEC SQL COMMIT WORK RELEASE ; */ 
-
-{
- struct sqlexd sqlstm;
- sqlstm.sqlvsn = 13;
- sqlstm.arrsiz = 5;
- sqlstm.sqladtp = &sqladt;
- sqlstm.sqltdsp = &sqltds;
- sqlstm.iters = (unsigned int  )1;
- sqlstm.offset = (unsigned int  )299;
- sqlstm.cud = sqlcud0;
- sqlstm.sqlest = (unsigned char  *)&sqlca;
- sqlstm.sqlety = (unsigned short)4352;
- sqlstm.occurs = (unsigned int  )0;
- sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
- if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+	
 }
 
 
-	getch();
-
-}
 //게시물 목록 가져오기
 void Post_Inquiry(int offset) {
 
@@ -1698,9 +1676,9 @@ WHERE RN > :offset; */
     sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
-    sqlstm.stmt = sq0016;
+    sqlstm.stmt = sq0015;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )314;
+    sqlstm.offset = (unsigned int  )299;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -1753,7 +1731,7 @@ WHERE RN > :offset; */
         sqlstm.sqladtp = &sqladt;
         sqlstm.sqltdsp = &sqltds;
         sqlstm.iters = (unsigned int  )1;
-        sqlstm.offset = (unsigned int  )337;
+        sqlstm.offset = (unsigned int  )322;
         sqlstm.selerr = (unsigned short)1;
         sqlstm.sqlpfmem = (unsigned int  )0;
         sqlstm.cud = sqlcud0;
@@ -1841,7 +1819,7 @@ WHERE RN > :offset; */
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )368;
+    sqlstm.offset = (unsigned int  )353;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1883,7 +1861,7 @@ void DB_connect()
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.iters = (unsigned int  )10;
-   sqlstm.offset = (unsigned int  )383;
+   sqlstm.offset = (unsigned int  )368;
    sqlstm.cud = sqlcud0;
    sqlstm.sqlest = (unsigned char  *)&sqlca;
    sqlstm.sqlety = (unsigned short)4352;
@@ -1970,7 +1948,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
     sqlstm.stmt = "select id ,pw into :b0,:b1  from user_info where id='admi\
 n'";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )414;
+    sqlstm.offset = (unsigned int  )399;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2042,7 +2020,7 @@ void sql_error(char *msg)
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )437;
+    sqlstm.offset = (unsigned int  )422;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
