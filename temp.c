@@ -43,10 +43,18 @@ void delete_post();
 int get_post_info(int post_id, char* title, char* id, int* del);
 void delete_id();
 void pw_update();
+void Post_Inquiry(int offset);
+void Post_Inquiry_Display();
+void rtrim();
+
 
 EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR uid[80];
 	VARCHAR pwd[20];
+EXEC SQL END DECLARE SECTION;
+
+EXEC SQL BEGIN DECLARE SECTION;
+    int offset = 0; /* :offset 변수 선언 */
 EXEC SQL END DECLARE SECTION;
 
 // win32 Visual C 컴파일시 추가
@@ -90,7 +98,6 @@ void main() {
         else {
             printf("\n");
         }
-        printf("\n");
         printf("                                     login\n");
         printf("\n");
         printf("                                     logout\n");
@@ -105,6 +112,7 @@ void main() {
         printf("\n");
         printf("                                     pwupdate\n");
         printf("\n");
+        printf("                                     post\n");
         printf("\n");
 
         if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
@@ -158,6 +166,15 @@ void main() {
                 pw_update();
             }
         }
+        else if (strcmp(op, "post") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                Post_Inquiry_Display();
+            }
+        }
+        
         else {
             msg_state = 1;
         }
@@ -811,6 +828,139 @@ void pw_update() {
     printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
     getch();
+}
+
+
+//게시물 목록
+void Post_Inquiry_Display()
+{
+	_putenv("NLS_LANG=American_America.KO16KSC5601"); //한글사용
+
+	DB_connect();
+	system("cls"); // 콘솔화면 초기화
+    	printf("--------------------------------------------------------------------------------\n");
+   	printf("                                   [게시물 목록]\n");
+    	printf("--------------------------------------------------------------------------------\n");
+	
+int offset = 0;
+
+    // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
+    Post_Inquiry(offset);
+
+    while (1) {
+        char input[10];
+        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제입력하세요: ");
+        scanf("%s", input);
+
+        if (strcmp(input, "1") == 0) {
+            main();
+            break;
+        } else if (strcmp(input, "2") == 0) {
+	    system("cls");
+	printf("--------------------------------------------------------------------------------\n");
+   	printf("                                   [게시물 목록]\n");
+    	printf("--------------------------------------------------------------------------------\n");
+            offset += 10; // 10개씩 건너뛰기
+            Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
+	} else if (strcmp(input, "3") == 0) {
+	    system("cls");
+	printf("--------------------------------------------------------------------------------\n");
+   	printf("                                   [게시물 목록]\n");
+    	printf("--------------------------------------------------------------------------------\n");
+            offset -= 10; // 10개씩 건너뛰기
+            Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
+        }else if (strcmp(input, "4") == 0){
+            text_input();
+            break;
+        }
+        else if (strcmp(input, "5") == 0){
+            delete_post();
+            break;
+            break;
+        }
+        else {
+            printf("입력이 올바르지 않습니다.\n");
+        }
+    }
+
+
+	EXEC SQL COMMIT WORK RELEASE ;
+	getch();
+
+}
+//게시물 목록 가져오기
+void Post_Inquiry(int offset) {
+
+    EXEC SQL BEGIN DECLARE SECTION;
+       int v_post_id;
+       varchar v_title[128];
+       varchar v_id[20];
+       int v_del;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
+    EXEC SQL DECLARE cur CURSOR FOR
+        SELECT POST_ID, TITLE, ID, DEL 
+FROM (
+    SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+    FROM (
+        SELECT POST_ID, TITLE, ID, DEL
+        FROM POST
+        WHERE DEL = 0
+    ) 
+    WHERE ROWNUM <= :offset + 10 /* offset부터 10개의 행을 가져옴 */
+)
+WHERE RN > :offset;
+
+
+    EXEC SQL OPEN cur;
+
+    	printf("   POST_ID   |                       TITLE                          |     ID    \n");
+	printf("--------------------------------------------------------------------------------\n");
+   
+    /* Fetch rows and display */
+    while (1) {
+        EXEC SQL FETCH cur INTO :v_post_id, :v_title, :v_id, :v_del;
+
+        if (sqlca.sqlcode != 0)
+            break;
+
+        if (sqlca.sqlcode != 0)
+            break;
+
+        int title_length = v_title.len;
+        int id_length = v_id.len;
+
+        // Oracle VARCHAR 변수의 길이를 직접 사용하여 공백 제거
+        while (title_length > 0 && v_title.arr[title_length - 1] == ' ') {
+            title_length--;
+        }
+        v_title.arr[title_length] = '\0';
+
+        while (id_length > 0 && v_id.arr[id_length - 1] == ' ') {
+            id_length--;
+        }
+        v_id.arr[id_length] = '\0';
+
+        printf("   %-10d| %-53s| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+    }
+
+    EXEC SQL CLOSE cur;
+}
+
+void rtrim(char temp[])
+{
+	int i;
+
+	i = strlen(temp)-1;
+	
+	while (temp[i] == ' ' && i > 0 ){
+		i--;
+        }
+	temp[i+1]='\0';
 }
 
 void DB_connect()

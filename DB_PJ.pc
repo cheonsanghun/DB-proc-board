@@ -98,7 +98,6 @@ void main() {
         else {
             printf("\n");
         }
-        printf("\n");
         printf("                                     login\n");
         printf("\n");
         printf("                                     logout\n");
@@ -113,7 +112,7 @@ void main() {
         printf("\n");
         printf("                                     pwupdate\n");
         printf("\n");
-        printf("                                         post\n");
+        printf("                                     post\n");
         printf("\n");
 
         if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
@@ -872,7 +871,6 @@ int offset = 0;
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
         }else if (strcmp(input, "4") == 0){
             text_input();
-            break;
             break;
         }
         else if (strcmp(input, "5") == 0){
