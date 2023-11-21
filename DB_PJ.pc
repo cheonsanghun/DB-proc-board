@@ -900,17 +900,18 @@ void Post_Inquiry(int offset) {
 
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     EXEC SQL DECLARE cur CURSOR FOR
-        SELECT POST_ID, TITLE, ID, DEL 
-FROM (
-    SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+    SELECT POST_ID, TITLE, ID, DEL 
     FROM (
-        SELECT POST_ID, TITLE, ID, DEL
-        FROM POST
-        WHERE DEL = 0
-    ) 
-    WHERE ROWNUM <= :offset + 10 /* offset부터 10개의 행을 가져옴 */
-)
-WHERE RN > :offset;
+        SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+        FROM (
+            SELECT POST_ID, TITLE, ID, DEL
+            FROM POST
+            WHERE DEL = 0
+            ORDER BY POST_ID DESC /* 여기에 ORDER BY 추가 */
+        ) 
+        WHERE ROWNUM <= :offset + 10 /* offset부터 10개의 행을 가져옴 */
+    )
+    WHERE RN > :offset;
 
 
     EXEC SQL OPEN cur;

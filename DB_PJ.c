@@ -131,8 +131,8 @@ extern void sqliem(unsigned char *, signed int *);
 
  static const char *sq0015 = 
 "select POST_ID ,TITLE ,ID ,DEL  from (select POST_ID ,TITLE ,ID ,DEL ,ROWNUM\
- RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where DEL=0) where ROWNUM\
-<=(:b0+10)) where RN>:b0           ";
+ RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where DEL=0 order by POST\
+_ID desc  ) where ROWNUM<=(:b0+10)) where RN>:b0           ";
 
 typedef struct { unsigned short len; unsigned char arr[1]; } VARCHAR;
 typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
@@ -154,12 +154,12 @@ static const short sqlcud0[] =
 246,0,0,12,0,0,29,739,0,0,0,0,0,1,0,
 261,0,0,13,41,0,5,818,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
 284,0,0,14,0,0,29,820,0,0,0,0,0,1,0,
-299,0,0,15,189,0,9,916,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
-322,0,0,15,0,0,13,923,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-353,0,0,15,0,0,15,948,0,0,0,0,0,1,0,
-368,0,0,0,0,0,27,972,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-399,0,0,17,59,0,4,999,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-422,0,0,18,0,0,31,1028,0,0,0,0,0,1,0,
+299,0,0,15,213,0,9,917,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
+322,0,0,15,0,0,13,924,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+353,0,0,15,0,0,15,949,0,0,0,0,0,1,0,
+368,0,0,0,0,0,27,973,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+399,0,0,17,59,0,4,1000,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+422,0,0,18,0,0,31,1029,0,0,0,0,0,1,0,
 };
 
 
@@ -1654,17 +1654,18 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
 
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     /* EXEC SQL DECLARE cur CURSOR FOR
-        SELECT POST_ID, TITLE, ID, DEL 
-FROM (
-    SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+    SELECT POST_ID, TITLE, ID, DEL 
     FROM (
-        SELECT POST_ID, TITLE, ID, DEL
-        FROM POST
-        WHERE DEL = 0
-    ) 
-    WHERE ROWNUM <= :offset + 10 /o offset부터 10개의 행을 가져옴 o/
-)
-WHERE RN > :offset; */ 
+        SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+        FROM (
+            SELECT POST_ID, TITLE, ID, DEL
+            FROM POST
+            WHERE DEL = 0
+            ORDER BY POST_ID DESC /o 여기에 ORDER BY 추가 o/
+        ) 
+        WHERE ROWNUM <= :offset + 10 /o offset부터 10개의 행을 가져옴 o/
+    )
+    WHERE RN > :offset; */ 
 
 
 
