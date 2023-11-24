@@ -27,6 +27,9 @@ void getxy(int *x, int *y) ;
 void clrscr(void) ;
 /*-----------------------------------------------------------*/
 
+// 한번에 보여줄 페이지의 크기
+#define OFFSET_SIZE 10
+
 void DB_connect();
 void Get_tuple();
 void sql_error(char *msg) ;
@@ -67,7 +70,6 @@ struct UserInfo {
 };
 
 bool login_state = false;
-
 // 유저 정보 
 struct UserInfo user;
 
@@ -82,36 +84,26 @@ void main() {
         printf("                                    메인화면\n");
         printf("--------------------------------------------------------------------------------\n");
         printf("                                   [ 명령어 ]\n");
-        printf("\n");
-        printf("\n\n");
+        printf("\n\n\n");
         printf("                                  1. post\n");
         printf("\n");
-
+        // 여기까지 9라인
         if(login_state){
             printf("                                  2. logout\n");
             printf("\n");
             printf("                                  3. pwupdate\n");
             printf("\n");
             printf("                                  4. withdraw\n");
-            printf("\n");
-            printf("\n");
         }
         else{
             printf("                                  2. login\n");
             printf("\n");
             printf("                                  3. signup\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
+            printf("\n\n");
         }
-        printf("\n");
-        printf("\n");
-        printf("\n");
-        printf("\n");
-
+        // 여기까지 14라인
+        printf("\n\n\n\n\n\n\n\n");
+        // 여기까지 22라인
         if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
         else { printf("\n"); }
         printf("--------------------------------------------------------------------------------\n");
@@ -801,54 +793,48 @@ void pw_update() {
 //게시물 목록
 void Post_Inquiry_Display()
 {
-
-int offset = 0;
-
+    int offset = 0;
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
-
-
     while (1) {
         system("cls"); // 콘솔화면 초기화
-    	printf("--------------------------------------------------------------------------------\n");
+    	printf("-------------------------------------------------------------------------------\n");
        	printf("                                   [게시물 목록]\n");
-    	printf("--------------------------------------------------------------------------------\n");
-	    
+    	printf("-------------------------------------------------------------------------------\n");
+        // 여기까지 3라인
         Post_Inquiry(offset);
-        printf("--------------------------------------------------------------------------------\n");
-        
+        // 여기까지 13라인
+        printf("-------------------------------------------------------------------------------\n");
+        // 여기까지 14라인
         char input[10];
-        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제\n6. 글 작성\n7. 글 삭제\n입력하세요: ");
+        printf("1. 글 보기\n2. 다음페이지\n3. 이전페이지\n4. 검색\n");
+        // 여기까지 18라인
+        if (login_state){
+            printf("5. 게시글작성\n6. 게시글 삭제\n0. 나가기\n\n\n\n");
+        }
+        else{
+            printf("0. 나가기\n\n\n\n\n\n");
+        }
+        printf("입력하세요: ");
         scanf("%s", input);
 
         if (strcmp(input, "1") == 0) {
-            break;
+            // 글 보기 기능
         } else if (strcmp(input, "2") == 0) {
-            system("cls");
-            printf("--------------------------------------------------------------------------------\n");
-            printf("                                   [게시물 목록]\n");
-            printf("--------------------------------------------------------------------------------\n");
-            offset += 10; // 10개씩 건너뛰기
-            Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
-            printf("--------------------------------------------------------------------------------\n");
+            offset += OFFSET_SIZE; // 10개씩 건너뛰기
 	    } else if (strcmp(input, "3") == 0) {
-            system("cls");
-            printf("--------------------------------------------------------------------------------\n");
-            printf("                                   [게시물 목록]\n");
-            printf("--------------------------------------------------------------------------------\n");
-            offset -= 10; // 10개씩 건너뛰기
-            Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
-            printf("--------------------------------------------------------------------------------\n");
-        }else if (strcmp(input, "4") == 0){
+            if ((offset - OFFSET_SIZE) > -1){
+                offset -= OFFSET_SIZE; // 10개씩 건너뛰기
+            }
+        } else if (strcmp(input, "4") == 0) {
+            // 검색기능
+        } else if ((strcmp(input, "5") == 0) && login_state){
             text_input();
         }
-        else if (strcmp(input, "5") == 0){
+        else if ((strcmp(input, "6") == 0) && login_state){
             delete_post();
         }
-        else if (strcmp(input, "6") == 0) {
-                text_input();
-        }
-        else if (strcmp(input, "7") == 0) {
-            delete_post();
+        else if ((strcmp(input, "0") == 0) || (strcmp(input, "exit") == 0)){
+            break;
         }
         else {
             printf("입력이 올바르지 않습니다.\n");
@@ -891,9 +877,8 @@ void Post_Inquiry(int offset) {
 
 
     EXEC SQL OPEN cur;
-
-    printf("   POST_ID   |                       TITLE                          |     ID    \n");
-	printf("--------------------------------------------------------------------------------\n");
+    printf("   POST_ID   |                       TITLE                          |     ID   \n");
+	printf("-------------------------------------------------------------------------------\n");
     int row_count = 0;
 
     /* Fetch rows and display */
@@ -932,10 +917,14 @@ void Post_Inquiry(int offset) {
         printf("게시물이 없습니다.\n");
         printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         printf("엔터를 누르십시오...");
-        getchar();
-        getchar();
+        getch();
         // Post_Inquiry_Display() 함수 호출
-        Post_Inquiry_Display();
+        offset = 0;
+        system("cls"); // 콘솔화면 초기화
+    	printf("-------------------------------------------------------------------------------\n");
+       	printf("                                   [게시물 목록]\n");
+    	printf("-------------------------------------------------------------------------------\n");
+        Post_Inquiry(offset);
         return; // 함수 종료
     }
     for (int i = row_count; i < 10; ++i) {
