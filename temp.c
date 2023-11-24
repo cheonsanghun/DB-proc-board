@@ -56,10 +56,6 @@ EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR pwd[20];
 EXEC SQL END DECLARE SECTION;
 
-EXEC SQL BEGIN DECLARE SECTION;
-    int offset = 0; /* :offset 변수 선언 */
-EXEC SQL END DECLARE SECTION;
-
 // win32 Visual C 컴파일시 추가
 #define getch() _getch()
 
@@ -72,6 +68,8 @@ struct UserInfo {
 bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
+int g_offset = 0;
+int prevOffset = 0;
 
 void main() {
     // 인코딩 설정
@@ -793,7 +791,7 @@ void pw_update() {
 //게시물 목록
 void Post_Inquiry_Display()
 {
-    int offset = 0;
+    g_offset = 0;
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
     while (1) {
         system("cls"); // 콘솔화면 초기화
@@ -801,12 +799,12 @@ void Post_Inquiry_Display()
        	printf("                                   [게시물 목록]\n");
     	printf("-------------------------------------------------------------------------------\n");
         // 여기까지 3라인
-        Post_Inquiry(offset);
+        Post_Inquiry(g_offset);
         // 여기까지 13라인
         printf("-------------------------------------------------------------------------------\n");
         // 여기까지 14라인
         char input[10];
-        printf("1. 글 보기\n2. 다음페이지\n3. 이전페이지\n4. 검색\n");
+        printf("1. 글 보기\n2. 이전페이지\n3. 다음페이지\n4. 검색\n");
         // 여기까지 18라인
         if (login_state){
             printf("5. 게시글작성\n6. 게시글 삭제\n0. 나가기\n\n\n\n");
@@ -819,13 +817,15 @@ void Post_Inquiry_Display()
 
         if (strcmp(input, "1") == 0) {
             // 글 보기 기능
-        } else if (strcmp(input, "2") == 0) {
-            offset += OFFSET_SIZE; // 10개씩 건너뛰기
-	    } else if (strcmp(input, "3") == 0) {
-            if ((offset - OFFSET_SIZE) > -1){
-                offset -= OFFSET_SIZE; // 10개씩 건너뛰기
+        }else if (strcmp(input, "2") == 0) {
+            if ((g_offset - OFFSET_SIZE) > -1){
+                prevOffset = g_offset;
+                g_offset -= OFFSET_SIZE; // 10개씩 건너뛰기
             }
-        } else if (strcmp(input, "4") == 0) {
+        } else if (strcmp(input, "3") == 0) {
+            prevOffset = g_offset;
+            g_offset += OFFSET_SIZE; // 10개씩 건너뛰기
+	    } else if (strcmp(input, "4") == 0) {
             // 검색기능
         } else if ((strcmp(input, "5") == 0) && login_state){
             text_input();
@@ -850,15 +850,18 @@ void Post_Inquiry_Display()
 void Post_Inquiry(int offset) {
 
     EXEC SQL BEGIN DECLARE SECTION;
-       int v_post_id;
-       varchar v_title[128];
-       varchar v_id[20];
-       int v_del;
-       int v_row_count;
-    EXEC SQL END DECLARE SECTION;
+        int v_post_id;
+        varchar v_title[128];
+        varchar v_id[20];
+        int v_del;
+        int v_row_count;
+        int v_offset = 0; /* :offset 변수 선언 */
+    EXEC SQL END DECLARE SECTION;   
 
     /* Register sql_error() as the error handler. */
     EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    v_offset = offset;
 
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     EXEC SQL DECLARE cur CURSOR FOR
@@ -871,9 +874,9 @@ void Post_Inquiry(int offset) {
             WHERE DEL = 0
             ORDER BY POST_ID DESC /* 여기에 ORDER BY 추가 */
         ) 
-        WHERE ROWNUM <= :offset + 10 /* offset부터 10개의 행을 가져옴 */
+        WHERE ROWNUM <= :v_offset + 10 /* offset부터 10개의 행을 가져옴 */
     )
-    WHERE RN > :offset;
+    WHERE RN > :v_offset;
 
 
     EXEC SQL OPEN cur;
@@ -914,17 +917,12 @@ void Post_Inquiry(int offset) {
     }
 
     if (row_count == 0) {
-        printf("게시물이 없습니다.\n");
-        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        printf("엔터를 누르십시오...");
-        getch();
-        // Post_Inquiry_Display() 함수 호출
-        offset = 0;
+        g_offset = prevOffset;
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
        	printf("                                   [게시물 목록]\n");
     	printf("-------------------------------------------------------------------------------\n");
-        Post_Inquiry(offset);
+        Post_Inquiry(g_offset);
         return; // 함수 종료
     }
     for (int i = row_count; i < 10; ++i) {

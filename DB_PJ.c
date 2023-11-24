@@ -140,26 +140,26 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,67,0,4,157,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
-36,0,0,2,40,0,5,255,0,0,1,1,0,1,0,1,3,0,0,
-55,0,0,3,0,0,29,257,0,0,0,0,0,1,0,
-70,0,0,4,47,0,4,279,0,0,1,0,0,1,0,2,3,0,0,
-89,0,0,5,73,0,3,328,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
-124,0,0,6,0,0,29,330,0,0,0,0,0,1,0,
-139,0,0,7,54,0,4,444,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-162,0,0,8,39,0,3,537,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-185,0,0,9,0,0,29,539,0,0,0,0,0,1,0,
-200,0,0,10,67,0,4,629,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-227,0,0,11,36,0,2,696,0,0,1,1,0,1,0,1,9,0,0,
-246,0,0,12,0,0,29,698,0,0,0,0,0,1,0,
-261,0,0,13,41,0,5,777,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-284,0,0,14,0,0,29,779,0,0,0,0,0,1,0,
-299,0,0,15,213,0,9,879,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
-322,0,0,15,0,0,13,886,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-353,0,0,15,0,0,15,935,0,0,0,0,0,1,0,
-368,0,0,0,0,0,27,959,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-399,0,0,17,59,0,4,986,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-422,0,0,18,0,0,31,1015,0,0,0,0,0,1,0,
+5,0,0,1,67,0,4,155,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
+36,0,0,2,40,0,5,253,0,0,1,1,0,1,0,1,3,0,0,
+55,0,0,3,0,0,29,255,0,0,0,0,0,1,0,
+70,0,0,4,47,0,4,277,0,0,1,0,0,1,0,2,3,0,0,
+89,0,0,5,73,0,3,326,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+124,0,0,6,0,0,29,328,0,0,0,0,0,1,0,
+139,0,0,7,54,0,4,442,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+162,0,0,8,39,0,3,535,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+185,0,0,9,0,0,29,537,0,0,0,0,0,1,0,
+200,0,0,10,67,0,4,627,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+227,0,0,11,36,0,2,694,0,0,1,1,0,1,0,1,9,0,0,
+246,0,0,12,0,0,29,696,0,0,0,0,0,1,0,
+261,0,0,13,41,0,5,775,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+284,0,0,14,0,0,29,777,0,0,0,0,0,1,0,
+299,0,0,15,213,0,9,882,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
+322,0,0,15,0,0,13,889,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+353,0,0,15,0,0,15,933,0,0,0,0,0,1,0,
+368,0,0,0,0,0,27,957,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+399,0,0,17,59,0,4,984,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+422,0,0,18,0,0,31,1013,0,0,0,0,0,1,0,
 };
 
 
@@ -227,12 +227,6 @@ struct { unsigned short len; unsigned char arr[20]; } pwd;
 /* EXEC SQL END DECLARE SECTION; */ 
 
 
-/* EXEC SQL BEGIN DECLARE SECTION; */ 
-
-    int offset = 0; /* :offset 변수 선언 */
-/* EXEC SQL END DECLARE SECTION; */ 
-
-
 // win32 Visual C 컴파일시 추가
 #define getch() _getch()
 
@@ -245,6 +239,8 @@ struct UserInfo {
 bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
+int g_offset = 0;
+int prevOffset = 0;
 
 void main() {
     // 인코딩 설정
@@ -1540,7 +1536,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_pw;
 //게시물 목록
 void Post_Inquiry_Display()
 {
-    int offset = 0;
+    g_offset = 0;
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
     while (1) {
         system("cls"); // 콘솔화면 초기화
@@ -1548,12 +1544,12 @@ void Post_Inquiry_Display()
        	printf("                                   [게시물 목록]\n");
     	printf("-------------------------------------------------------------------------------\n");
         // 여기까지 3라인
-        Post_Inquiry(offset);
+        Post_Inquiry(g_offset);
         // 여기까지 13라인
         printf("-------------------------------------------------------------------------------\n");
         // 여기까지 14라인
         char input[10];
-        printf("1. 글 보기\n2. 다음페이지\n3. 이전페이지\n4. 검색\n");
+        printf("1. 글 보기\n2. 이전페이지\n3. 다음페이지\n4. 검색\n");
         // 여기까지 18라인
         if (login_state){
             printf("5. 게시글작성\n6. 게시글 삭제\n0. 나가기\n\n\n\n");
@@ -1566,13 +1562,15 @@ void Post_Inquiry_Display()
 
         if (strcmp(input, "1") == 0) {
             // 글 보기 기능
-        } else if (strcmp(input, "2") == 0) {
-            offset += OFFSET_SIZE; // 10개씩 건너뛰기
-	    } else if (strcmp(input, "3") == 0) {
-            if ((offset - OFFSET_SIZE) > -1){
-                offset -= OFFSET_SIZE; // 10개씩 건너뛰기
+        }else if (strcmp(input, "2") == 0) {
+            if ((g_offset - OFFSET_SIZE) > -1){
+                prevOffset = g_offset;
+                g_offset -= OFFSET_SIZE; // 10개씩 건너뛰기
             }
-        } else if (strcmp(input, "4") == 0) {
+        } else if (strcmp(input, "3") == 0) {
+            prevOffset = g_offset;
+            g_offset += OFFSET_SIZE; // 10개씩 건너뛰기
+	    } else if (strcmp(input, "4") == 0) {
             // 검색기능
         } else if ((strcmp(input, "5") == 0) && login_state){
             text_input();
@@ -1598,21 +1596,24 @@ void Post_Inquiry(int offset) {
 
     /* EXEC SQL BEGIN DECLARE SECTION; */ 
 
-       int v_post_id;
-       /* varchar v_title[128]; */ 
+        int v_post_id;
+        /* varchar v_title[128]; */ 
 struct { unsigned short len; unsigned char arr[128]; } v_title;
 
-       /* varchar v_id[20]; */ 
+        /* varchar v_id[20]; */ 
 struct { unsigned short len; unsigned char arr[20]; } v_id;
 
-       int v_del;
-       int v_row_count;
+        int v_del;
+        int v_row_count;
+        int v_offset = 0; /* :offset 변수 선언 */
     /* EXEC SQL END DECLARE SECTION; */ 
-
+   
 
     /* Register sql_error() as the error handler. */
     /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
 
+
+    v_offset = offset;
 
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     /* EXEC SQL DECLARE cur CURSOR FOR
@@ -1625,9 +1626,9 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
             WHERE DEL = 0
             ORDER BY POST_ID DESC /o 여기에 ORDER BY 추가 o/
         ) 
-        WHERE ROWNUM <= :offset + 10 /o offset부터 10개의 행을 가져옴 o/
+        WHERE ROWNUM <= :v_offset + 10 /o offset부터 10개의 행을 가져옴 o/
     )
-    WHERE RN > :offset; */ 
+    WHERE RN > :v_offset; */ 
 
 
 
@@ -1649,7 +1650,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.sqlety = (unsigned short)4352;
     sqlstm.occurs = (unsigned int  )0;
     sqlstm.sqcmod = (unsigned int )0;
-    sqlstm.sqhstv[0] = (         void  *)&offset;
+    sqlstm.sqhstv[0] = (         void  *)&v_offset;
     sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
     sqlstm.sqhsts[0] = (         int  )0;
     sqlstm.sqindv[0] = (         void  *)0;
@@ -1657,7 +1658,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.sqharm[0] = (unsigned int  )0;
     sqlstm.sqadto[0] = (unsigned short )0;
     sqlstm.sqtdso[0] = (unsigned short )0;
-    sqlstm.sqhstv[1] = (         void  *)&offset;
+    sqlstm.sqhstv[1] = (         void  *)&v_offset;
     sqlstm.sqhstl[1] = (unsigned int  )sizeof(int);
     sqlstm.sqhsts[1] = (         int  )0;
     sqlstm.sqindv[1] = (         void  *)0;
@@ -1779,17 +1780,12 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     }
 
     if (row_count == 0) {
-        printf("게시물이 없습니다.\n");
-        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        printf("엔터를 누르십시오...");
-        getch();
-        // Post_Inquiry_Display() 함수 호출
-        offset = 0;
+        g_offset = prevOffset;
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
        	printf("                                   [게시물 목록]\n");
     	printf("-------------------------------------------------------------------------------\n");
-        Post_Inquiry(offset);
+        Post_Inquiry(g_offset);
         return; // 함수 종료
     }
     for (int i = row_count; i < 10; ++i) {
