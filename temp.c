@@ -96,7 +96,7 @@ void main() {
             printf("                               게스트 모드입니다.\n");
         }
         else {
-            printf("\n");
+            printf("\n\n");
         }
         printf("                                     login\n");
         printf("\n");
@@ -104,15 +104,14 @@ void main() {
         printf("\n");
         printf("                                     signup\n");
         printf("\n");
-        printf("                                     write\n");
-        printf("\n");
-        printf("                                     delete\n");
-        printf("\n");
-        printf("                                     withdraw\n");
+        printf("                                     post\n");
         printf("\n");
         printf("                                     pwupdate\n");
         printf("\n");
-        printf("                                     post\n");
+        printf("                                     withdraw\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
         printf("\n");
 
         if (login_state) { gotoxy(0, 22); printf("%s\n", user.id); }
@@ -138,17 +137,6 @@ void main() {
             user.id[0] = '\0';
             user.pw[0] = '\0';
             msg_state = 0;
-        }
-        else if (strcmp(op, "write") == 0) {
-            if (!login_state) {
-                msg_state = 3;
-            }
-            else {
-                text_input();
-            }
-        }
-        else if (strcmp(op, "delete") == 0) {
-            delete_post();
         }
         else if (strcmp(op, "withdraw") == 0) {
             if (!login_state) {
@@ -850,11 +838,10 @@ int offset = 0;
         printf("--------------------------------------------------------------------------------\n");
         
         char input[10];
-        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제\n\n\n입력하세요: ");
+        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제\n6. 글 작성\n7. 글 삭제\n입력하세요: ");
         scanf("%s", input);
 
         if (strcmp(input, "1") == 0) {
-            main();
             break;
         } else if (strcmp(input, "2") == 0) {
             system("cls");
@@ -876,6 +863,17 @@ int offset = 0;
             text_input();
         }
         else if (strcmp(input, "5") == 0){
+            delete_post();
+        }
+        else if (strcmp(input, "6") == 0) {
+            if (!login_state) {
+                msg_state = 3;
+            }
+            else {
+                text_input();
+            }
+        }
+        else if (strcmp(input, "7") == 0) {
             delete_post();
         }
         else {
