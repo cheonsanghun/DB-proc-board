@@ -72,8 +72,12 @@ struct UserInfo user;
 // 게시글 목록 정보
 int g_offset = 0;
 int prevOffset = 0;
+// 검색된 게시물 목록 정보
+int s_offset = 0;
+int prev_s_offset = 0;
 // 검색어 정보
 char keyword[100];
+
 
 void main() {
     // 인코딩 설정
@@ -791,7 +795,7 @@ void pw_update() {
     getch();
 }
 
-void search_post_inquiry() {
+void search_post_inquiry(int offset) {
     EXEC SQL BEGIN DECLARE SECTION;
         int v_post_id;
         varchar v_title[128];
@@ -804,6 +808,8 @@ void search_post_inquiry() {
 
     /* Register sql_error() as the error handler. */
     EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    v_offset = offset;
 
     // 검색어를 Oracle 변수에 복사
     strncpy((char*)v_keyword.arr, keyword, sizeof(v_keyword.arr));
@@ -828,7 +834,7 @@ void search_post_inquiry() {
     printf("   POST_ID   |                       TITLE                          |     ID   \n");
 	printf("-------------------------------------------------------------------------------\n");
     int row_count = 0;
-
+    
     /* Fetch rows and display */
     while (1) {
         EXEC SQL FETCH cur_search INTO :v_post_id, :v_title, :v_id, :v_del;
@@ -858,6 +864,20 @@ void search_post_inquiry() {
         } else {
             printf("   %-10d| %-53s| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
         }
+    }  
+    
+    if(row_count == 0){
+        s_offset = prev_s_offset;
+        system("cls"); // 콘솔화면 초기화
+    	printf("-------------------------------------------------------------------------------\n");
+       	printf("                                    [검색 목록]\n");
+    	printf("-------------------------------------------------------------------------------\n");
+        search_post_inquiry(s_offset);
+        return; // 함수 종료
+    }
+    
+    for(int i=0; i<(10-row_count);i++){
+        printf("             |                                                      |                    \n");
     }
     EXEC SQL CLOSE cur_search;
 }
@@ -865,6 +885,8 @@ void search_post_inquiry() {
 //게시물 검색
 void search_post(){
     // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
+    s_offset = 0;
+    prev_s_offset = 0;
     while (1) {
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
@@ -872,13 +894,13 @@ void search_post(){
     	printf("-------------------------------------------------------------------------------\n");
         // 여기까지 3라인
         // search_post_inquiry();
-        search_post_inquiry();
+        search_post_inquiry(s_offset);
         // 여기까지 13라인
         printf("-------------------------------------------------------------------------------\n");
         // 여기까지 14라인
         char input[10];
         printf("1. 글 보기\n2. 이전페이지\n3. 다음페이지\n");
-        printf("0. 나가기\n\n\n\n");
+        printf("0. 나가기\n\n\n\n\n");
         printf("> ");
         scanf("%s", input);
 
@@ -886,8 +908,14 @@ void search_post(){
             // 글 보기 기능
         }
         else if (strcmp(input, "2") == 0) {
+            if ((s_offset - OFFSET_SIZE) > -1){
+                prev_s_offset = s_offset;
+                s_offset -= OFFSET_SIZE;
+            }
         } 
         else if (strcmp(input, "3") == 0) {
+            prev_s_offset = s_offset;
+            s_offset += OFFSET_SIZE;
 	    }
         else if ((strcmp(input, "0") == 0) || (strcmp(input, "exit") == 0)){
             break;
