@@ -847,9 +847,10 @@ int offset = 0;
     	printf("--------------------------------------------------------------------------------\n");
 	    
         Post_Inquiry(offset);
-
+        printf("--------------------------------------------------------------------------------\n");
+        
         char input[10];
-        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제입력하세요: ");
+        printf("1. 종료하기\n2. 다음페이지\n3. 이전페이지\n4. 게시글작성\n5. 게시글 삭제\n\n\n입력하세요: ");
         scanf("%s", input);
 
         if (strcmp(input, "1") == 0) {
@@ -862,6 +863,7 @@ int offset = 0;
             printf("--------------------------------------------------------------------------------\n");
             offset += 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
+            printf("--------------------------------------------------------------------------------\n");
 	    } else if (strcmp(input, "3") == 0) {
             system("cls");
             printf("--------------------------------------------------------------------------------\n");
@@ -869,6 +871,7 @@ int offset = 0;
             printf("--------------------------------------------------------------------------------\n");
             offset -= 10; // 10개씩 건너뛰기
             Post_Inquiry(offset); // 새로운 offset으로 Post_Inquiry() 호출
+            printf("--------------------------------------------------------------------------------\n");
         }else if (strcmp(input, "4") == 0){
             text_input();
         }
@@ -893,6 +896,7 @@ void Post_Inquiry(int offset) {
        varchar v_title[128];
        varchar v_id[20];
        int v_del;
+       int v_row_count;
     EXEC SQL END DECLARE SECTION;
 
     /* Register sql_error() as the error handler. */
@@ -916,9 +920,10 @@ void Post_Inquiry(int offset) {
 
     EXEC SQL OPEN cur;
 
-    	printf("   POST_ID   |                       TITLE                          |     ID    \n");
+    printf("   POST_ID   |                       TITLE                          |     ID    \n");
 	printf("--------------------------------------------------------------------------------\n");
-   
+    int row_count = 0;
+
     /* Fetch rows and display */
     while (1) {
         EXEC SQL FETCH cur INTO :v_post_id, :v_title, :v_id, :v_del;
@@ -926,6 +931,7 @@ void Post_Inquiry(int offset) {
         if (sqlca.sqlcode != 0)
             break;
 
+        row_count++;    
         if (sqlca.sqlcode != 0)
             break;
 
@@ -943,8 +949,27 @@ void Post_Inquiry(int offset) {
         }
         v_id.arr[id_length] = '\0';
 
-        printf("   %-10d| %-53s| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+        if (strlen((char *)v_title.arr) > 50) {
+            printf("   %-10d| %-50.50s...| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+        } else {
+            printf("   %-10d| %-53s| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+        }
     }
+
+    if (row_count == 0) {
+        printf("게시물이 없습니다.\n");
+        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        printf("엔터를 누르십시오...");
+        getchar();
+        getchar();
+        // Post_Inquiry_Display() 함수 호출
+        Post_Inquiry_Display();
+        return; // 함수 종료
+    }
+    for (int i = row_count; i < 10; ++i) {
+        printf("\n"); // 빈 줄 출력
+    }
+
 
     EXEC SQL CLOSE cur;
 }
