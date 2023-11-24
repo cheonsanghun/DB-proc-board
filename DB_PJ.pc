@@ -49,6 +49,7 @@ void pw_update();
 void Post_Inquiry(int offset);
 void Post_Inquiry_Display();
 void rtrim();
+void search_post();
 
 
 EXEC SQL BEGIN DECLARE SECTION;
@@ -68,8 +69,11 @@ struct UserInfo {
 bool login_state = false;
 // 유저 정보 
 struct UserInfo user;
+// 게시글 목록 정보
 int g_offset = 0;
 int prevOffset = 0;
+// 검색어 정보
+char keyword[100];
 
 void main() {
     // 인코딩 설정
@@ -787,6 +791,112 @@ void pw_update() {
     getch();
 }
 
+void search_post_inquiry() {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+        varchar v_title[128];
+        varchar v_id[20];
+        int v_del;
+        int v_row_count;
+        int v_offset = 0;
+        varchar v_keyword[100];  // 검색어를 담을 변수 추가
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    // 검색어를 Oracle 변수에 복사
+    strncpy((char*)v_keyword.arr, keyword, sizeof(v_keyword.arr));
+    v_keyword.len = strlen((char*)v_keyword.arr);
+
+    // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
+    EXEC SQL DECLARE cur_search CURSOR FOR
+    SELECT POST_ID, TITLE, ID, DEL
+    FROM (
+        SELECT POST_ID, TITLE, ID, DEL, ROWNUM AS RN
+        FROM (
+            SELECT POST_ID, TITLE, ID, DEL
+            FROM POST
+            WHERE DEL = 0 AND TITLE LIKE '%' || :v_keyword || '%'
+            ORDER BY POST_ID DESC
+        ) 
+        WHERE ROWNUM <= :v_offset + 10
+    )
+    WHERE RN > :v_offset;
+
+    EXEC SQL OPEN cur_search;
+    printf("   POST_ID   |                       TITLE                          |     ID   \n");
+	printf("-------------------------------------------------------------------------------\n");
+    int row_count = 0;
+
+    /* Fetch rows and display */
+    while (1) {
+        EXEC SQL FETCH cur_search INTO :v_post_id, :v_title, :v_id, :v_del;
+        if (sqlca.sqlcode != 0)
+            break;
+
+        row_count++;    
+        if (sqlca.sqlcode != 0)
+            break;
+
+        int title_length = v_title.len;
+        int id_length = v_id.len;
+
+        // Oracle VARCHAR 변수의 길이를 직접 사용하여 공백 제거
+        while (title_length > 0 && v_title.arr[title_length - 1] == ' ') {
+            title_length--;
+        }
+        v_title.arr[title_length] = '\0';
+
+        while (id_length > 0 && v_id.arr[id_length - 1] == ' ') {
+            id_length--;
+        }
+        v_id.arr[id_length] = '\0';
+
+        if (strlen((char *)v_title.arr) > 50) {
+            printf("   %-10d| %-50.50s...| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+        } else {
+            printf("   %-10d| %-53s| %-20s\n", v_post_id, (char *)v_title.arr, (char *)v_id.arr);
+        }
+    }
+    EXEC SQL CLOSE cur_search;
+}
+
+//게시물 검색
+void search_post(){
+    // 처음에 처음 10개의 행을 가져오도록 Post_Inquiry() 호출
+    while (1) {
+        system("cls"); // 콘솔화면 초기화
+    	printf("-------------------------------------------------------------------------------\n");
+       	printf("                                    [검색 목록]\n");
+    	printf("-------------------------------------------------------------------------------\n");
+        // 여기까지 3라인
+        // search_post_inquiry();
+        search_post_inquiry();
+        // 여기까지 13라인
+        printf("-------------------------------------------------------------------------------\n");
+        // 여기까지 14라인
+        char input[10];
+        printf("1. 글 보기\n2. 이전페이지\n3. 다음페이지\n");
+        printf("0. 나가기\n\n\n\n");
+        printf("> ");
+        scanf("%s", input);
+
+        if (strcmp(input, "1") == 0) {
+            // 글 보기 기능
+        }
+        else if (strcmp(input, "2") == 0) {
+        } 
+        else if (strcmp(input, "3") == 0) {
+	    }
+        else if ((strcmp(input, "0") == 0) || (strcmp(input, "exit") == 0)){
+            break;
+        }
+        else {
+            printf("입력이 올바르지 않습니다.\n");
+        }
+    }
+}
 
 //게시물 목록
 void Post_Inquiry_Display()
@@ -807,12 +917,12 @@ void Post_Inquiry_Display()
         printf("1. 글 보기\n2. 이전페이지\n3. 다음페이지\n4. 검색\n");
         // 여기까지 18라인
         if (login_state){
-            printf("5. 게시글작성\n6. 게시글 삭제\n0. 나가기\n\n\n\n");
+            printf("5. 게시글작성\n6. 게시글 삭제\n0. 나가기\n\n");
         }
         else{
-            printf("0. 나가기\n\n\n\n\n\n");
+            printf("0. 나가기\n\n\n\n");
         }
-        printf("입력하세요: ");
+        printf("> ");
         scanf("%s", input);
 
         if (strcmp(input, "1") == 0) {
@@ -827,6 +937,15 @@ void Post_Inquiry_Display()
             g_offset += OFFSET_SIZE; // 10개씩 건너뛰기
 	    } else if (strcmp(input, "4") == 0) {
             // 검색기능
+            gotoxy(0,24);
+            printf("검색어를 입력하세요: ");
+            getchar();
+            fgets(keyword, sizeof(keyword), stdin);
+            size_t len = strlen(keyword);
+            if (len > 0 && keyword[len - 1] == '\n') {
+                keyword[len - 1] = '\0';
+            }
+            search_post();
         } else if ((strcmp(input, "5") == 0) && login_state){
             text_input();
         }
@@ -844,7 +963,6 @@ void Post_Inquiry_Display()
 
 	
 }
-
 
 //게시물 목록 가져오기
 void Post_Inquiry(int offset) {
