@@ -129,13 +129,13 @@ static const int IAPFAIL = 1403;
 static const int IAPFTL  = 535;
 extern void sqliem(unsigned char *, signed int *);
 
- static const char *sq0015 = 
+ static const char *sq0017 = 
 "select POST_ID ,TITLE ,ID ,DEL  from (select POST_ID ,TITLE ,ID ,DEL ,ROWNUM\
  RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where (DEL=0 and TITLE li\
 ke (('%'||:b0)||'%')) order by POST_ID desc  ) where ROWNUM<=(:b1+10)) where R\
 N>:b1           ";
 
- static const char *sq0016 = 
+ static const char *sq0018 = 
 "select POST_ID ,TITLE ,ID ,DEL  from (select POST_ID ,TITLE ,ID ,DEL ,ROWNUM\
  RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where DEL=0 order by POST\
 _ID desc  ) where ROWNUM<=(:b0+10)) where RN>:b0           ";
@@ -146,29 +146,31 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,67,0,4,163,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
-36,0,0,2,40,0,5,261,0,0,1,1,0,1,0,1,3,0,0,
-55,0,0,3,0,0,29,263,0,0,0,0,0,1,0,
-70,0,0,4,47,0,4,285,0,0,1,0,0,1,0,2,3,0,0,
-89,0,0,5,73,0,3,334,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
-124,0,0,6,0,0,29,336,0,0,0,0,0,1,0,
-139,0,0,7,54,0,4,450,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-162,0,0,8,39,0,3,543,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-185,0,0,9,0,0,29,545,0,0,0,0,0,1,0,
-200,0,0,10,67,0,4,635,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-227,0,0,11,36,0,2,702,0,0,1,1,0,1,0,1,9,0,0,
-246,0,0,12,0,0,29,704,0,0,0,0,0,1,0,
-261,0,0,13,41,0,5,783,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-284,0,0,14,0,0,29,785,0,0,0,0,0,1,0,
-299,0,0,15,248,0,9,833,0,0,3,3,0,1,0,1,9,0,0,1,3,0,0,1,3,0,0,
-326,0,0,15,0,0,13,840,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-357,0,0,15,0,0,15,882,0,0,0,0,0,1,0,
-372,0,0,16,213,0,9,1028,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
-395,0,0,16,0,0,13,1035,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-426,0,0,16,0,0,15,1079,0,0,0,0,0,1,0,
-441,0,0,0,0,0,27,1103,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-472,0,0,18,59,0,4,1130,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-495,0,0,19,0,0,31,1159,0,0,0,0,0,1,0,
+5,0,0,1,67,0,4,165,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
+36,0,0,2,40,0,5,210,0,0,1,1,0,1,0,1,3,0,0,
+55,0,0,3,0,0,29,212,0,0,0,0,0,1,0,
+70,0,0,4,40,0,5,303,0,0,1,1,0,1,0,1,3,0,0,
+89,0,0,5,0,0,29,305,0,0,0,0,0,1,0,
+104,0,0,6,47,0,4,327,0,0,1,0,0,1,0,2,3,0,0,
+123,0,0,7,73,0,3,376,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+158,0,0,8,0,0,29,378,0,0,0,0,0,1,0,
+173,0,0,9,54,0,4,484,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+196,0,0,10,39,0,3,581,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+219,0,0,11,0,0,29,583,0,0,0,0,0,1,0,
+234,0,0,12,67,0,4,673,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+261,0,0,13,36,0,2,740,0,0,1,1,0,1,0,1,9,0,0,
+280,0,0,14,0,0,29,742,0,0,0,0,0,1,0,
+295,0,0,15,41,0,5,821,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+318,0,0,16,0,0,29,823,0,0,0,0,0,1,0,
+333,0,0,17,248,0,9,871,0,0,3,3,0,1,0,1,9,0,0,1,3,0,0,1,3,0,0,
+360,0,0,17,0,0,13,878,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+391,0,0,17,0,0,15,920,0,0,0,0,0,1,0,
+406,0,0,18,213,0,9,1066,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
+429,0,0,18,0,0,13,1073,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+460,0,0,18,0,0,15,1117,0,0,0,0,0,1,0,
+475,0,0,0,0,0,27,1141,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+506,0,0,20,59,0,4,1168,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+529,0,0,21,0,0,31,1197,0,0,0,0,0,1,0,
 };
 
 
@@ -223,7 +225,9 @@ void pw_update();
 void Post_Inquiry(int offset);
 void Post_Inquiry_Display();
 void rtrim();
+void search_post_inquiry(int offset);
 void search_post();
+void deletePostInPost(int post_id);
 
 
 /* EXEC SQL BEGIN DECLARE SECTION; */ 
@@ -429,6 +433,103 @@ ost_id=:b3";
     }
 }
 
+// 게시글안에서 게시글을 삭제할 때 사용할 함
+void deletePostInPost(int post_id){
+    while(true){
+        char op[5];
+        printf("                            삭제하시겠습니까?(y,n): ");    
+        scanf("%s",op);
+        if (strcmp(op, "y") == 0 || strcmp(op, "Y") == 0) {
+            // 'y' 또는 'Y'를 입력하면 루프 종료
+            break;
+        } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
+            // 'n' 또는 'N'을 입력하면 함수 종료
+            return;
+        }
+    }  
+
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        int v_post_id;
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+    /* Register sql_error() as the error handler. */
+    /* EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n"); */ 
+
+
+    /* 매개변수 post_id 값을 Oracle 변수에 복사 */
+    v_post_id = post_id;
+
+    /* 실행시킬 SQL 문장*/
+    /* EXEC SQL UPDATE post SET del = 1 WHERE post_id = :v_post_id; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 4;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "update post  set del=1 where post_id=:b0";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )36;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_post_id;
+    sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    /* EXEC SQL COMMIT; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 4;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )55;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                   게시물 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 게시물 정보 ]\n\n\n\n");;
+    printf("                              삭제가 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
+}
+
 // 게시글 삭제 처리
 void delete_post(){
     system("cls"); // 콘솔화면 초기화
@@ -521,7 +622,7 @@ void delete_post(){
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "update post  set del=1 where post_id=:b0";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )36;
+    sqlstm.offset = (unsigned int  )70;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -558,7 +659,7 @@ void delete_post(){
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )55;
+    sqlstm.offset = (unsigned int  )89;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -602,7 +703,7 @@ int get_post_id(){
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select NVL(max(post_id),0) into :b0  from post ";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )70;
+    sqlstm.offset = (unsigned int  )104;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -699,7 +800,7 @@ struct { unsigned short len; unsigned char arr[2000]; } v_text;
     sqlstm.stmt = "insert into post (post_id,id,title,text,del) values (:b0,\
 :b1,:b2,:b3,:b4)";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )89;
+    sqlstm.offset = (unsigned int  )123;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -768,7 +869,7 @@ struct { unsigned short len; unsigned char arr[2000]; } v_text;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )124;
+    sqlstm.offset = (unsigned int  )158;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -790,32 +891,17 @@ void text_input(){
     printf("제목:\n");
     printf("--------------------------------------------------------------------------------\n");
     printf("                                     [ 본문 ]\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
-    printf("종료하려면 Esc 키를 누르세요.\n");
+    printf("작성을 취소하려면 exit를, 글을 저장하려면 Esc 키를 누르세요.\n");
 
     char title[128];
     // 제목 입력단.
     gotoxy(6, 1);
     scanf("%s",title);
+    if (strcmp(title, "exit") == 0){
+        return;
+    }
 
     // 본문 입력단.
     gotoxy(0, 4);
@@ -825,6 +911,7 @@ void text_input(){
     wchar_t inputBuffer[2000]; // 충분한 크기의 배열로 설정
     memset(inputBuffer, 0, sizeof(inputBuffer)); // 배열 초기화
     int index = 0;
+    int h = 0;
     wchar_t ch;
 
     while (1) {
@@ -834,12 +921,18 @@ void text_input(){
             inputBuffer[index] = L'\0';
             _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
             _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
+            if (wcscmp(inputBuffer, L"exit") == 0) {
+                return;
+            }
             input_post(title, inputBuffer);
             return;  // text_input 함수를 종료하고 main 함수의 while 루프로 돌아감
         }
         else if (ch == 8) {
             if (index > 0) {
                 wprintf(L"\b \b"); // 백스페이스 효과
+                if (inputBuffer[index - 1] == L'\n'){
+                    h--;
+                }
                 inputBuffer[--index] = L'\0';
                 gotoxy(0, 0);
                 system("cls");
@@ -859,12 +952,12 @@ void text_input(){
             }
         }
         else if (ch == L'\r') {
-            if(index < 18){
+            if(h < 18){
+                h++;
                 wprintf(L"\n");
                 inputBuffer[index++] = '\n';
             }
         }
-        // Enter 키를 누를 때는 처리하지 않음
         else if (ch != L'\r') {
             wprintf(L"%c", ch);
             inputBuffer[index++] = ch;
@@ -909,7 +1002,7 @@ struct { unsigned short len; unsigned char arr[20]; } id_var;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select count(id) into :b0  from user_info where id=:b1";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )139;
+    sqlstm.offset = (unsigned int  )173;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -990,8 +1083,14 @@ void signup() {
     while(1){
         gotoxy(34, 10);
         pw_input(temp_pw);
+        if (strcmp(temp_pw, "exit") == 0){
+            return;
+        }
         gotoxy(34, 13);
         pw_input(temp_pw2);
+        if (strcmp(temp_pw2, "exit") == 0){
+            return;
+        }
         if (strcmp(temp_pw, temp_pw2) == 0) {
             break;
         } else {
@@ -1004,6 +1103,7 @@ void signup() {
         }        
     }
     save_user_info(temp_id, temp_pw);
+
     system("cls");
     printf("--------------------------------------------------------------------------------\n");
     printf("                                    회원가입\n");
@@ -1038,9 +1138,6 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
     strcpy((char *)pw_var.arr, pw);
     pw_var.len = strlen((char *)pw_var.arr);
 
-    // printf("%s, %s", id_var.arr, pw_var.arr);
-    // getch();
-
     /* 실행시킬 SQL 문장*/
     /* EXEC SQL INSERT INTO user_info VALUES (:id_var, :pw_var); */ 
 
@@ -1052,7 +1149,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "insert into user_info  values (:b0,:b1)";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )162;
+    sqlstm.offset = (unsigned int  )196;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1097,7 +1194,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw_var;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )185;
+    sqlstm.offset = (unsigned int  )219;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1217,7 +1314,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
    sqlstm.stmt = "select count(id) into :b0  from user_info where (id=:b1 an\
 d pw=:b2)";
    sqlstm.iters = (unsigned int  )1;
-   sqlstm.offset = (unsigned int  )200;
+   sqlstm.offset = (unsigned int  )234;
    sqlstm.selerr = (unsigned short)1;
    sqlstm.sqlpfmem = (unsigned int  )0;
    sqlstm.cud = sqlcud0;
@@ -1340,7 +1437,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_id;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "delete  from user_info  where id=:b0";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )227;
+    sqlstm.offset = (unsigned int  )261;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1377,7 +1474,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_id;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )246;
+    sqlstm.offset = (unsigned int  )280;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1482,7 +1579,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_pw;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "update user_info  set pw=:b0 where id=:b1";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )261;
+    sqlstm.offset = (unsigned int  )295;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1527,7 +1624,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_user_pw;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )284;
+    sqlstm.offset = (unsigned int  )318;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1577,7 +1674,7 @@ struct { unsigned short len; unsigned char arr[100]; } v_keyword;
     // 검색어를 Oracle 변수에 복사
     strncpy((char*)v_keyword.arr, keyword, sizeof(v_keyword.arr));
     v_keyword.len = strlen((char*)v_keyword.arr);
-
+    
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     /* EXEC SQL DECLARE cur_search CURSOR FOR
     SELECT POST_ID, TITLE, ID, DEL
@@ -1602,9 +1699,9 @@ struct { unsigned short len; unsigned char arr[100]; } v_keyword;
     sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
-    sqlstm.stmt = sq0015;
+    sqlstm.stmt = sq0017;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )299;
+    sqlstm.offset = (unsigned int  )333;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -1665,7 +1762,7 @@ struct { unsigned short len; unsigned char arr[100]; } v_keyword;
         sqlstm.sqladtp = &sqladt;
         sqlstm.sqltdsp = &sqltds;
         sqlstm.iters = (unsigned int  )1;
-        sqlstm.offset = (unsigned int  )326;
+        sqlstm.offset = (unsigned int  )360;
         sqlstm.selerr = (unsigned short)1;
         sqlstm.sqlpfmem = (unsigned int  )0;
         sqlstm.cud = sqlcud0;
@@ -1748,7 +1845,7 @@ struct { unsigned short len; unsigned char arr[100]; } v_keyword;
         }
     }  
     
-    if(row_count == 0){
+    if(row_count == 0 && s_offset != 0){
         s_offset = prev_s_offset;
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
@@ -1770,7 +1867,7 @@ struct { unsigned short len; unsigned char arr[100]; } v_keyword;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )357;
+    sqlstm.offset = (unsigned int  )391;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -1804,7 +1901,7 @@ void search_post(){
         printf("> ");
         scanf("%s", input);
 
-        if (strcmp(input, "1") == 0) {
+        if (strcmp(input, "1") == 0) { 
             // 글 보기 기능
         }
         else if (strcmp(input, "2") == 0) {
@@ -1915,7 +2012,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
 
 
     v_offset = offset;
-
+    
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     /* EXEC SQL DECLARE cur CURSOR FOR
     SELECT POST_ID, TITLE, ID, DEL 
@@ -1941,9 +2038,9 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
-    sqlstm.stmt = sq0016;
+    sqlstm.stmt = sq0018;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )372;
+    sqlstm.offset = (unsigned int  )406;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -1996,7 +2093,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
         sqlstm.sqladtp = &sqladt;
         sqlstm.sqltdsp = &sqltds;
         sqlstm.iters = (unsigned int  )1;
-        sqlstm.offset = (unsigned int  )395;
+        sqlstm.offset = (unsigned int  )429;
         sqlstm.selerr = (unsigned short)1;
         sqlstm.sqlpfmem = (unsigned int  )0;
         sqlstm.cud = sqlcud0;
@@ -2103,7 +2200,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )426;
+    sqlstm.offset = (unsigned int  )460;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -2145,7 +2242,7 @@ void DB_connect()
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.iters = (unsigned int  )10;
-   sqlstm.offset = (unsigned int  )441;
+   sqlstm.offset = (unsigned int  )475;
    sqlstm.cud = sqlcud0;
    sqlstm.sqlest = (unsigned char  *)&sqlca;
    sqlstm.sqlety = (unsigned short)4352;
@@ -2232,7 +2329,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
     sqlstm.stmt = "select id ,pw into :b0,:b1  from user_info where id='admi\
 n'";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )472;
+    sqlstm.offset = (unsigned int  )506;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2304,7 +2401,7 @@ void sql_error(char *msg)
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )495;
+    sqlstm.offset = (unsigned int  )529;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;

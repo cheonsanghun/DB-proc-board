@@ -49,7 +49,9 @@ void pw_update();
 void Post_Inquiry(int offset);
 void Post_Inquiry_Display();
 void rtrim();
+void search_post_inquiry(int offset);
 void search_post();
+void deletePostInPost(int post_id);
 
 
 EXEC SQL BEGIN DECLARE SECTION;
@@ -177,6 +179,46 @@ int get_post_info(int post_id, char* title, char* id, int* del) {
     } else {
         return 0;  // 가져온 값이 없음
     }
+}
+
+// 게시글안에서 게시글을 삭제할 때 사용할 함
+void deletePostInPost(int post_id){
+    while(true){
+        char op[5];
+        printf("                            삭제하시겠습니까?(y,n): ");    
+        scanf("%s",op);
+        if (strcmp(op, "y") == 0 || strcmp(op, "Y") == 0) {
+            // 'y' 또는 'Y'를 입력하면 루프 종료
+            break;
+        } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
+            // 'n' 또는 'N'을 입력하면 함수 종료
+            return;
+        }
+    }  
+
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    /* 매개변수 post_id 값을 Oracle 변수에 복사 */
+    v_post_id = post_id;
+
+    /* 실행시킬 SQL 문장*/
+    EXEC SQL UPDATE post SET del = 1 WHERE post_id = :v_post_id;
+
+    EXEC SQL COMMIT;
+    system("cls");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                   게시물 삭제\n");
+    printf("--------------------------------------------------------------------------------\n");
+    printf("                                 [ 게시물 정보 ]\n\n\n\n");;
+    printf("                              삭제가 완료되었습니다!\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("--------------------------------------------------------------------------------\n");
+    getch();
 }
 
 // 게시글 삭제 처리
@@ -346,32 +388,17 @@ void text_input(){
     printf("제목:\n");
     printf("--------------------------------------------------------------------------------\n");
     printf("                                     [ 본문 ]\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
-    printf("종료하려면 Esc 키를 누르세요.\n");
+    printf("작성을 취소하려면 exit를, 글을 저장하려면 Esc 키를 누르세요.\n");
 
     char title[128];
     // 제목 입력단.
     gotoxy(6, 1);
     scanf("%s",title);
+    if (strcmp(title, "exit") == 0){
+        return;
+    }
 
     // 본문 입력단.
     gotoxy(0, 4);
@@ -381,6 +408,7 @@ void text_input(){
     wchar_t inputBuffer[2000]; // 충분한 크기의 배열로 설정
     memset(inputBuffer, 0, sizeof(inputBuffer)); // 배열 초기화
     int index = 0;
+    int h = 0;
     wchar_t ch;
 
     while (1) {
@@ -390,12 +418,18 @@ void text_input(){
             inputBuffer[index] = L'\0';
             _setmode(_fileno(stdout), _O_TEXT); // 텍스트 출력 모드로 전환
             _setmode(_fileno(stdin), _O_TEXT);  // 텍스트 입력 모드로 전환
+            if (wcscmp(inputBuffer, L"exit") == 0) {
+                return;
+            }
             input_post(title, inputBuffer);
             return;  // text_input 함수를 종료하고 main 함수의 while 루프로 돌아감
         }
         else if (ch == 8) {
             if (index > 0) {
                 wprintf(L"\b \b"); // 백스페이스 효과
+                if (inputBuffer[index - 1] == L'\n'){
+                    h--;
+                }
                 inputBuffer[--index] = L'\0';
                 gotoxy(0, 0);
                 system("cls");
@@ -415,12 +449,12 @@ void text_input(){
             }
         }
         else if (ch == L'\r') {
-            if(index < 18){
+            if(h < 18){
+                h++;
                 wprintf(L"\n");
                 inputBuffer[index++] = '\n';
             }
         }
-        // Enter 키를 누를 때는 처리하지 않음
         else if (ch != L'\r') {
             wprintf(L"%c", ch);
             inputBuffer[index++] = ch;
@@ -495,8 +529,14 @@ void signup() {
     while(1){
         gotoxy(34, 10);
         pw_input(temp_pw);
+        if (strcmp(temp_pw, "exit") == 0){
+            return;
+        }
         gotoxy(34, 13);
         pw_input(temp_pw2);
+        if (strcmp(temp_pw2, "exit") == 0){
+            return;
+        }
         if (strcmp(temp_pw, temp_pw2) == 0) {
             break;
         } else {
@@ -509,6 +549,7 @@ void signup() {
         }        
     }
     save_user_info(temp_id, temp_pw);
+
     system("cls");
     printf("--------------------------------------------------------------------------------\n");
     printf("                                    회원가입\n");
@@ -535,9 +576,6 @@ void save_user_info(const char *id, const char *pw){
 
     strcpy((char *)pw_var.arr, pw);
     pw_var.len = strlen((char *)pw_var.arr);
-
-    // printf("%s, %s", id_var.arr, pw_var.arr);
-    // getch();
 
     /* 실행시킬 SQL 문장*/
     EXEC SQL INSERT INTO user_info VALUES (:id_var, :pw_var);
@@ -814,7 +852,7 @@ void search_post_inquiry(int offset) {
     // 검색어를 Oracle 변수에 복사
     strncpy((char*)v_keyword.arr, keyword, sizeof(v_keyword.arr));
     v_keyword.len = strlen((char*)v_keyword.arr);
-
+    
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     EXEC SQL DECLARE cur_search CURSOR FOR
     SELECT POST_ID, TITLE, ID, DEL
@@ -866,7 +904,7 @@ void search_post_inquiry(int offset) {
         }
     }  
     
-    if(row_count == 0){
+    if(row_count == 0 && s_offset != 0){
         s_offset = prev_s_offset;
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
@@ -904,7 +942,7 @@ void search_post(){
         printf("> ");
         scanf("%s", input);
 
-        if (strcmp(input, "1") == 0) {
+        if (strcmp(input, "1") == 0) { 
             // 글 보기 기능
         }
         else if (strcmp(input, "2") == 0) {
@@ -1008,7 +1046,7 @@ void Post_Inquiry(int offset) {
     EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
 
     v_offset = offset;
-
+    
     // 현재 10개의 행을 건너뛰고 다음 10개의 행을 조회하는 쿼리
     EXEC SQL DECLARE cur CURSOR FOR
     SELECT POST_ID, TITLE, ID, DEL 
