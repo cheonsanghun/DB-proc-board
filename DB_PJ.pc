@@ -1090,12 +1090,14 @@ void Post_Inquiry(int offset) {
     while (1) {
         EXEC SQL FETCH cur INTO :v_post_id, :v_title, :v_id, :v_del;
 
-        if (sqlca.sqlcode != 0)
+        if (sqlca.sqlcode != 0){
             break;
-
-        row_count++;    
-        if (sqlca.sqlcode != 0)
-            break;
+        }
+        else{
+            if (v_del != 1){
+                row_count++;
+            }
+        }
 
         int title_length = v_title.len;
         int id_length = v_id.len;
@@ -1119,11 +1121,14 @@ void Post_Inquiry(int offset) {
     }
 
     if (row_count == 0) {
+        if(g_offset == 0 && prevOffset == 0)
+            return;
         g_offset = prevOffset;
         system("cls"); // 콘솔화면 초기화
     	printf("-------------------------------------------------------------------------------\n");
        	printf("                                   [게시물 목록]\n");
     	printf("-------------------------------------------------------------------------------\n");
+
         Post_Inquiry(g_offset);
         return; // 함수 종료
     }
@@ -1464,10 +1469,10 @@ int get_comment_info(int comm_id, char *id) {
 void DB_connect()
 {
    /* 본인 계정이름으로 바꾸어 쓸 것 */
-   strcpy((char *)uid.arr,"a20192162@//sedb.deu.ac.kr:1521/orcl");
+   strcpy((char *)uid.arr,"a20183148@//sedb.deu.ac.kr:1521/orcl");
    uid.len = (short) strlen((char *)uid.arr);
    /* 본인 계정 암호로 바꾸어 쓸 것 */
-   strcpy((char *)pwd.arr,"20192162");
+   strcpy((char *)pwd.arr,"20183148");
    pwd.len = (short) strlen((char *)pwd.arr);
 
    EXEC SQL CONNECT :uid IDENTIFIED BY :pwd;
