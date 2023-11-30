@@ -60,16 +60,16 @@ static struct sqltdss sqltds =
 struct sqlcxp
 {
   unsigned short fillen;
-           char  filnam[9];
+           char  filnam[11];
 };
 static const struct sqlcxp sqlfpn =
 {
-    8,
-    "DB_PJ.pc"
+    10,
+    ".\\DB_PJ.pc"
 };
 
 
-static unsigned int sqlctx = 18251;
+static unsigned int sqlctx = 65355;
 
 
 static struct sqlexd {
@@ -140,8 +140,9 @@ N>:b1           ";
  RN  from (select POST_ID ,TITLE ,ID ,DEL  from POST where DEL=0 order by POST\
 _ID desc  ) where ROWNUM<=(:b0+10)) where RN>:b0           ";
 
- static const char *sq0024 = 
-"select comm_id ,id ,text  from post_comment where post_id=:b0           ";
+ static const char *sq0025 = 
+"select comm_id ,id ,text  from post_comment where post_id=:b0 order by comm_\
+id            ";
 
 typedef struct { unsigned short len; unsigned char arr[1]; } VARCHAR;
 typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
@@ -149,44 +150,45 @@ typedef struct { unsigned short len; unsigned char arr[1]; } varchar;
 /* cud (compilation unit data) array */
 static const short sqlcud0[] =
 {13,4130,1,0,0,
-5,0,0,1,67,0,4,176,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
-36,0,0,2,40,0,5,221,0,0,1,1,0,1,0,1,3,0,0,
-55,0,0,3,0,0,29,223,0,0,0,0,0,1,0,
-70,0,0,4,40,0,5,314,0,0,1,1,0,1,0,1,3,0,0,
-89,0,0,5,0,0,29,316,0,0,0,0,0,1,0,
-104,0,0,6,47,0,4,338,0,0,1,0,0,1,0,2,3,0,0,
-123,0,0,7,73,0,3,387,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
-158,0,0,8,0,0,29,389,0,0,0,0,0,1,0,
-173,0,0,9,54,0,4,495,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
-196,0,0,10,39,0,3,592,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-219,0,0,11,0,0,29,594,0,0,0,0,0,1,0,
-234,0,0,12,67,0,4,684,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
-261,0,0,13,36,0,2,751,0,0,1,1,0,1,0,1,9,0,0,
-280,0,0,14,0,0,29,753,0,0,0,0,0,1,0,
-295,0,0,15,41,0,5,832,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
-318,0,0,16,0,0,29,834,0,0,0,0,0,1,0,
-333,0,0,17,248,0,9,882,0,0,3,3,0,1,0,1,9,0,0,1,3,0,0,1,3,0,0,
-360,0,0,17,0,0,13,889,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-391,0,0,17,0,0,15,931,0,0,0,0,0,1,0,
-406,0,0,18,213,0,9,1085,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
-429,0,0,18,0,0,13,1092,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
-460,0,0,18,0,0,15,1136,0,0,0,0,0,1,0,
-475,0,0,19,68,0,4,1222,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,9,0,0,1,3,0,0,
-506,0,0,20,55,0,4,1266,0,0,1,0,0,1,0,2,3,0,0,
-525,0,0,21,75,0,3,1325,0,0,4,4,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
-556,0,0,22,0,0,29,1328,0,0,0,0,0,1,0,
-571,0,0,23,0,0,31,1331,0,0,0,0,0,1,0,
-586,0,0,24,72,0,9,1395,0,0,1,1,0,1,0,1,3,0,0,
-605,0,0,24,0,0,13,1399,0,0,3,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,
-632,0,0,24,0,0,15,1412,0,0,0,0,0,1,0,
-647,0,0,25,55,0,4,1425,0,0,2,1,0,1,0,2,9,0,0,1,3,0,0,
-670,0,0,26,44,0,2,1438,0,0,1,1,0,1,0,1,3,0,0,
-689,0,0,27,0,0,29,1440,0,0,0,0,0,1,0,
-704,0,0,28,0,0,31,1448,0,0,0,0,0,1,0,
-719,0,0,29,55,0,4,1500,0,0,2,1,0,1,0,2,9,0,0,1,3,0,0,
-742,0,0,0,0,0,27,1522,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
-773,0,0,31,59,0,4,1549,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
-796,0,0,32,0,0,31,1578,0,0,0,0,0,1,0,
+5,0,0,1,67,0,4,174,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,3,0,0,1,3,0,0,
+36,0,0,2,40,0,5,219,0,0,1,1,0,1,0,1,3,0,0,
+55,0,0,3,0,0,29,221,0,0,0,0,0,1,0,
+70,0,0,4,40,0,5,313,0,0,1,1,0,1,0,1,3,0,0,
+89,0,0,5,0,0,29,315,0,0,0,0,0,1,0,
+104,0,0,6,47,0,4,337,0,0,1,0,0,1,0,2,3,0,0,
+123,0,0,7,73,0,3,386,0,0,5,5,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+158,0,0,8,0,0,29,388,0,0,0,0,0,1,0,
+173,0,0,9,54,0,4,494,0,0,2,1,0,1,0,2,3,0,0,1,9,0,0,
+196,0,0,10,39,0,3,591,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+219,0,0,11,0,0,29,593,0,0,0,0,0,1,0,
+234,0,0,12,67,0,4,683,0,0,3,2,0,1,0,2,3,0,0,1,9,0,0,1,9,0,0,
+261,0,0,13,36,0,2,750,0,0,1,1,0,1,0,1,9,0,0,
+280,0,0,14,0,0,29,752,0,0,0,0,0,1,0,
+295,0,0,15,41,0,5,831,0,0,2,2,0,1,0,1,9,0,0,1,9,0,0,
+318,0,0,16,0,0,29,833,0,0,0,0,0,1,0,
+333,0,0,17,248,0,9,881,0,0,3,3,0,1,0,1,9,0,0,1,3,0,0,1,3,0,0,
+360,0,0,17,0,0,13,888,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+391,0,0,17,0,0,15,930,0,0,0,0,0,1,0,
+406,0,0,18,213,0,9,1084,0,0,2,2,0,1,0,1,3,0,0,1,3,0,0,
+429,0,0,18,0,0,13,1091,0,0,4,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,2,3,0,0,
+460,0,0,18,0,0,15,1135,0,0,0,0,0,1,0,
+475,0,0,19,48,0,4,1253,0,0,2,1,0,1,0,2,3,0,0,1,3,0,0,
+498,0,0,20,68,0,4,1277,0,0,4,1,0,1,0,2,9,0,0,2,9,0,0,2,9,0,0,1,3,0,0,
+529,0,0,21,55,0,4,1321,0,0,1,0,0,1,0,2,3,0,0,
+548,0,0,22,75,0,3,1351,0,0,4,4,0,1,0,1,3,0,0,1,9,0,0,1,9,0,0,1,3,0,0,
+579,0,0,23,0,0,29,1354,0,0,0,0,0,1,0,
+594,0,0,24,0,0,31,1357,0,0,0,0,0,1,0,
+609,0,0,25,90,0,9,1377,0,0,1,1,0,1,0,1,3,0,0,
+628,0,0,25,0,0,13,1381,0,0,3,0,0,1,0,2,3,0,0,2,9,0,0,2,9,0,0,
+655,0,0,25,0,0,15,1393,0,0,0,0,0,1,0,
+670,0,0,26,55,0,4,1406,0,0,2,1,0,1,0,2,9,0,0,1,3,0,0,
+693,0,0,27,44,0,2,1419,0,0,1,1,0,1,0,1,3,0,0,
+712,0,0,28,0,0,29,1421,0,0,0,0,0,1,0,
+727,0,0,29,0,0,31,1429,0,0,0,0,0,1,0,
+742,0,0,30,55,0,4,1451,0,0,2,1,0,1,0,2,9,0,0,1,3,0,0,
+765,0,0,0,0,0,27,1473,0,0,4,4,0,1,0,1,9,0,0,1,9,0,0,1,10,0,0,1,10,0,0,
+796,0,0,32,59,0,4,1500,0,0,2,0,0,1,0,2,9,0,0,2,9,0,0,
+819,0,0,33,0,0,31,1529,0,0,0,0,0,1,0,
 };
 
 
@@ -243,17 +245,15 @@ void Post_Inquiry_Display();
 void rtrim();
 void search_post_inquiry(int offset);
 void search_post();
-void deletePostInPost(int post_id);
+int deletePostInPost(int post_id);
 void write_comment(int post_id);
 void read_post(int post_id);
 int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del);
-int get_comment_id();
 void input_comment(int post_id, const wchar_t *w_comment_text);
-void write_comment(int post_id) ;
 void display_comments(int post_id);
 void delete_comment_from_db(int comm_id);
-void delete_comment();
 int get_comment_info(int comm_id, char *id);
+int get_post_del(int post_id);
 
 /* EXEC SQL BEGIN DECLARE SECTION; */ 
 
@@ -461,7 +461,7 @@ ost_id=:b3";
 }
 
 // 게시글안에서 게시글을 삭제할 때 사용할 함
-void deletePostInPost(int post_id){
+int deletePostInPost(int post_id){
     while(true){
         char op[5];
         printf("                            삭제하시겠습니까?(y,n): ");    
@@ -471,7 +471,7 @@ void deletePostInPost(int post_id){
             break;
         } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
             // 'n' 또는 'N'을 입력하면 함수 종료
-            return;
+            return 0;
         }
     }  
 
@@ -555,6 +555,7 @@ void deletePostInPost(int post_id){
     printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
     getch();
+    return 1;
 }
 
 // 게시글 삭제 처리
@@ -1983,10 +1984,10 @@ void Post_Inquiry_Display()
 
         if (strcmp(input, "1") == 0) {
             // 글 보기 기능
-   	int post_id;
-    	printf("글 번호를 입력하세요: ");
-    	scanf("%d", &post_id);
-    	read_post(post_id); // read_post 함수 호출
+            int post_id;
+            printf("글 번호를 입력하세요: ");
+            scanf("%d", &post_id);
+            read_post(post_id); // read_post 함수 호출
         }else if (strcmp(input, "2") == 0) {
             if ((g_offset - OFFSET_SIZE) > -1){
                 prevOffset = g_offset;
@@ -2261,11 +2262,14 @@ void rtrim(char temp[])
 
 // 게시글 읽기 함수
 void read_post(int post_id) {
-    system("cls");
-    printf("--------------------------------------------------------------------------------\n");
-    printf("                                   글 읽기\n");
-    printf("--------------------------------------------------------------------------------\n");
-
+    
+    // 글 삭제 여부
+    if(get_post_del(post_id)){
+        printf("게시글 정보를 찾을 수 없습니다.\n");
+        getch();
+        return 0;
+    }
+    
     // 게시글 정보를 가져옴
     char title[128];
     char id[20];
@@ -2273,49 +2277,150 @@ void read_post(int post_id) {
     wchar_t text[516];
     wchar_t ch;
     char input[10];
+    
+    while(1){
+        system("cls");
+        printf("--------------------------------------------------------------------------------\n");
+        printf("                                   글 읽기\n");
+        printf("--------------------------------------------------------------------------------\n");
 
-    if (get_post_text(post_id, title, id, text, del)) {
-        // 게시글 제목 출력
-        printf("제목: %s\n", title);
-        // 게시글 작성자와 삭제 여부 출력
-        printf("작성자: %s\n", id);
-        if (del == 1) {
-            printf("delete\n");
-        } else {
-            // 게시글 내용 출력
-            wprintf(L"\n%ls", text);
-
-	// 댓글 출력
-   	    printf("\n\n--------------------------------------------------------------------------------\n");
-    	    printf("                                   댓글 목록\n");
-            printf("--------------------------------------------------------------------------------\n");
-            display_comments(post_id);
-
-            // 댓글 보기 및 삭제 옵션 출력
-            printf("\n\nOptions:\n");
-            printf("1) 댓글 달기\n");
-            printf("2) 댓글 삭제\n");
-            printf("0) 뒤로 가기\n");
-            printf("> ");
-            scanf(" %s", input);  // 공백을 추가하여 버퍼를 비움
-
-            if (strcmp(input, "1") == 0) {
-                write_comment(post_id);  // 댓글 달기 함수 호출
-            } else if (strcmp(input, "2") == 0) {
-                delete_comment(post_id);  // 댓글 삭제 함수 호출
-            } else if (strcmp(input, "0") == 0) {
-                Post_Inquiry_Display();
+        if (get_post_text(post_id, title, id, text, del)) {
+            // 게시글 제목 출력
+            printf("제목: %s\n", title);
+            // 게시글 작성자와 삭제 여부 출력
+            printf("작성자: %s\n", id);
+            if (del == 1) {
+                printf("delete\n");
             } else {
-                printf("잘못된 선택입니다.\n");
-            }
-        }
-    } else {
-        printf("not found.\n");
-    }
+                // 게시글 내용 출력
+                wprintf(L"\n%ls", text);
 
-    getch();
+                // 댓글 출력
+                printf("\n\n--------------------------------------------------------------------------------\n");
+                printf("                                   댓글 목록\n");
+                printf("--------------------------------------------------------------------------------\n");
+                display_comments(post_id);
+
+                // 댓글 보기 및 삭제 옵션 출력
+                printf("\n\nOptions:\n");
+                printf("1) 댓글 달기\n");
+                printf("2) 댓글 삭제\n");
+                printf("3) 글 삭제\n");
+                printf("0) 뒤로 가기\n");
+                printf("> ");
+                scanf(" %s", input);  // 공백을 추가하여 버퍼를 비움
+
+                if (strcmp(input, "1") == 0) {
+                    if(login_state){
+                        printf("댓글을 입력해주세요: ");
+                        char comm[100];
+                        scanf("%s",comm);
+                        input_comment(post_id, comm);
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if (strcmp(input, "2") == 0) {
+                    if(login_state){
+                        int comm_id;
+                        printf("삭제할 댓글의 ID를 입력하세요: ");
+                        scanf("%d",&comm_id);
+                        delete_comment_from_db(comm_id);  // 댓글 삭제 함수 호출
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if(strcmp(input, "3") == 0){ // 글 삭제
+                    if(login_state){
+                        if(deletePostInPost(post_id)){
+                            break;
+                        }
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if (strcmp(input, "0") == 0) {
+                    break;
+                } else {
+                    printf("잘못된 선택입니다.\n");
+                }
+            }
+        } else {
+            printf("not found.\n");
+        }
+    }
 }
 
+int get_post_del(int post_id) {
+    /* EXEC SQL BEGIN DECLARE SECTION; */ 
+
+        int v_post_id;
+        int v_del;
+    /* EXEC SQL END DECLARE SECTION; */ 
+
+
+    v_post_id = post_id;
+
+    // 해당 게시글의 내용을 가져오는 SQL 실행
+    /* EXEC SQL SELECT del INTO :v_del
+              FROM post
+              WHERE post_id = :v_post_id; */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "select del into :b0  from post where post_id=:b1";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )475;
+    sqlstm.selerr = (unsigned short)1;
+    sqlstm.sqlpfmem = (unsigned int  )0;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_del;
+    sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqhstv[1] = (         void  *)&v_post_id;
+    sqlstm.sqhstl[1] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[1] = (         int  )0;
+    sqlstm.sqindv[1] = (         void  *)0;
+    sqlstm.sqinds[1] = (         int  )0;
+    sqlstm.sqharm[1] = (unsigned int  )0;
+    sqlstm.sqadto[1] = (unsigned short )0;
+    sqlstm.sqtdso[1] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    if (sqlca.sqlcode == 0) {
+        return v_del;  // 가져온 값이 있음
+    } else {
+        return -1;  // 가져온 값이 없음
+    }
+}
 
 // 게시글 내용을 가져오는 함수
 int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del) {
@@ -2351,7 +2456,7 @@ struct { unsigned short len; unsigned char arr[516]; } v_text;
     sqlstm.stmt = "select title ,id ,text into :b0,:b1,:b2  from post where \
 post_id=:b3";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )475;
+    sqlstm.offset = (unsigned int  )498;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2458,7 +2563,7 @@ int get_comment_id() {
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select NVL(max(comm_id),0) into :b0  from post_comment ";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )506;
+    sqlstm.offset = (unsigned int  )529;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2496,7 +2601,7 @@ int get_comment_id() {
 }
 
 // 댓글을 데이터베이스에 저장하는 함수
-void input_comment(int post_id, const wchar_t *w_comment_text) {
+void input_comment(int post_id, char *comm) {
     // 댓글 ID를 얻어옴
     int v_comment_id = get_comment_id();
 
@@ -2506,52 +2611,87 @@ void input_comment(int post_id, const wchar_t *w_comment_text) {
         /* varchar v_id[20]; */ 
 struct { unsigned short len; unsigned char arr[20]; } v_id;
 
-        /* varchar v_text[1000]; */ 
-struct { unsigned short len; unsigned char arr[1000]; } v_text;
+        /* varchar v_text[100]; */ 
+struct { unsigned short len; unsigned char arr[100]; } v_text;
 
     /* EXEC SQL END DECLARE SECTION; */ 
 
 
     v_post_id = post_id;
 
-    // 넓은 문자열을 문자열로 변환
-    char mb_str[1000];
-    size_t mb_str_len = wcstombs(mb_str, w_comment_text, wcslen(w_comment_text) + 1);//wcstombs(mb_str, w_comment_text, wcslen(w_comment_text) + 1);
-
-
-    wchar_t ch;
-    // 문자열을 VARCHAR 변수에 복사
-    strncpy((char *)v_text.arr, mb_str, sizeof(v_text.arr));
-    v_text.len = mb_str_len;
-    
-    // NULL 종료 문자 추가
-    if (v_text.len < sizeof(v_text.arr)) {
-        v_text.arr[v_text.len] = '\0';
-    } else {
-        // 문자열이 변수의 길이를 초과하는 경우, 최대 길이에 맞춰 NULL 종료 문자 추가
-        v_text.arr[sizeof(v_text.arr) - 1] = '\0';
-    }
-
-    // 사용자 ID 복사
-    /*strncpy((char *)v_id.arr, user.id, sizeof(v_id.arr));
-    v_id.len = strlen((char *)v_id.arr);*/
-    if (login_state) {
-           strncpy((char *)v_id.arr, user.id, sizeof(v_id.arr));
-       } else if (!login_state) {
-           // 로그인 상태가 아니면 "guest"로 대체
-           strncpy((char *)v_id.arr, "guest", sizeof(v_id.arr));
-           printf("\n로그인을 하지 않으면 댓글을 달 수 없습니다");
-	   ch = _getwch();
-           if( ch == 27) {
-           main();
-	   }
-       }
+    strncpy((char *)v_id.arr, user.id, sizeof(v_id.arr));
     v_id.len = strlen((char *)v_id.arr);
 
+    // comm 문자열을 v_text에 복사
+    strncpy((char *)v_text.arr, comm, sizeof(v_text.arr));
+    v_text.len = strlen((char *)v_text.arr);
+
     // 실행시킬 SQL 문장
- if (login_state) {
-        // 실행시킬 SQL 문장
-        /* EXEC SQL INSERT INTO post_comment (comm_id, id, text, post_id) VALUES (:v_comment_id, :v_id, :v_text, :v_post_id); */ 
+    /* EXEC SQL INSERT INTO post_comment (comm_id, id, text, post_id) VALUES (:v_comment_id, :v_id, :v_text, :v_post_id); */ 
+
+{
+    struct sqlexd sqlstm;
+    sqlstm.sqlvsn = 13;
+    sqlstm.arrsiz = 5;
+    sqlstm.sqladtp = &sqladt;
+    sqlstm.sqltdsp = &sqltds;
+    sqlstm.stmt = "insert into post_comment (comm_id,id,text,post_id) values\
+ (:b0,:b1,:b2,:b3)";
+    sqlstm.iters = (unsigned int  )1;
+    sqlstm.offset = (unsigned int  )548;
+    sqlstm.cud = sqlcud0;
+    sqlstm.sqlest = (unsigned char  *)&sqlca;
+    sqlstm.sqlety = (unsigned short)4352;
+    sqlstm.occurs = (unsigned int  )0;
+    sqlstm.sqhstv[0] = (         void  *)&v_comment_id;
+    sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[0] = (         int  )0;
+    sqlstm.sqindv[0] = (         void  *)0;
+    sqlstm.sqinds[0] = (         int  )0;
+    sqlstm.sqharm[0] = (unsigned int  )0;
+    sqlstm.sqadto[0] = (unsigned short )0;
+    sqlstm.sqtdso[0] = (unsigned short )0;
+    sqlstm.sqhstv[1] = (         void  *)&v_id;
+    sqlstm.sqhstl[1] = (unsigned int  )22;
+    sqlstm.sqhsts[1] = (         int  )0;
+    sqlstm.sqindv[1] = (         void  *)0;
+    sqlstm.sqinds[1] = (         int  )0;
+    sqlstm.sqharm[1] = (unsigned int  )0;
+    sqlstm.sqadto[1] = (unsigned short )0;
+    sqlstm.sqtdso[1] = (unsigned short )0;
+    sqlstm.sqhstv[2] = (         void  *)&v_text;
+    sqlstm.sqhstl[2] = (unsigned int  )102;
+    sqlstm.sqhsts[2] = (         int  )0;
+    sqlstm.sqindv[2] = (         void  *)0;
+    sqlstm.sqinds[2] = (         int  )0;
+    sqlstm.sqharm[2] = (unsigned int  )0;
+    sqlstm.sqadto[2] = (unsigned short )0;
+    sqlstm.sqtdso[2] = (unsigned short )0;
+    sqlstm.sqhstv[3] = (         void  *)&v_post_id;
+    sqlstm.sqhstl[3] = (unsigned int  )sizeof(int);
+    sqlstm.sqhsts[3] = (         int  )0;
+    sqlstm.sqindv[3] = (         void  *)0;
+    sqlstm.sqinds[3] = (         int  )0;
+    sqlstm.sqharm[3] = (unsigned int  )0;
+    sqlstm.sqadto[3] = (unsigned short )0;
+    sqlstm.sqtdso[3] = (unsigned short )0;
+    sqlstm.sqphsv = sqlstm.sqhstv;
+    sqlstm.sqphsl = sqlstm.sqhstl;
+    sqlstm.sqphss = sqlstm.sqhsts;
+    sqlstm.sqpind = sqlstm.sqindv;
+    sqlstm.sqpins = sqlstm.sqinds;
+    sqlstm.sqparm = sqlstm.sqharm;
+    sqlstm.sqparc = sqlstm.sqharc;
+    sqlstm.sqpadto = sqlstm.sqadto;
+    sqlstm.sqptdso = sqlstm.sqtdso;
+    sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+    if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
+}
+
+
+
+    if (sqlca.sqlcode == 0) {
+        /* EXEC SQL COMMIT; */ 
 
 {
         struct sqlexd sqlstm;
@@ -2559,147 +2699,39 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
         sqlstm.arrsiz = 5;
         sqlstm.sqladtp = &sqladt;
         sqlstm.sqltdsp = &sqltds;
-        sqlstm.stmt = "insert into post_comment (comm_id,id,text,post_id) va\
-lues (:b0,:b1,:b2,:b3)";
         sqlstm.iters = (unsigned int  )1;
-        sqlstm.offset = (unsigned int  )525;
+        sqlstm.offset = (unsigned int  )579;
         sqlstm.cud = sqlcud0;
         sqlstm.sqlest = (unsigned char  *)&sqlca;
         sqlstm.sqlety = (unsigned short)4352;
         sqlstm.occurs = (unsigned int  )0;
-        sqlstm.sqhstv[0] = (         void  *)&v_comment_id;
-        sqlstm.sqhstl[0] = (unsigned int  )sizeof(int);
-        sqlstm.sqhsts[0] = (         int  )0;
-        sqlstm.sqindv[0] = (         void  *)0;
-        sqlstm.sqinds[0] = (         int  )0;
-        sqlstm.sqharm[0] = (unsigned int  )0;
-        sqlstm.sqadto[0] = (unsigned short )0;
-        sqlstm.sqtdso[0] = (unsigned short )0;
-        sqlstm.sqhstv[1] = (         void  *)&v_id;
-        sqlstm.sqhstl[1] = (unsigned int  )22;
-        sqlstm.sqhsts[1] = (         int  )0;
-        sqlstm.sqindv[1] = (         void  *)0;
-        sqlstm.sqinds[1] = (         int  )0;
-        sqlstm.sqharm[1] = (unsigned int  )0;
-        sqlstm.sqadto[1] = (unsigned short )0;
-        sqlstm.sqtdso[1] = (unsigned short )0;
-        sqlstm.sqhstv[2] = (         void  *)&v_text;
-        sqlstm.sqhstl[2] = (unsigned int  )1002;
-        sqlstm.sqhsts[2] = (         int  )0;
-        sqlstm.sqindv[2] = (         void  *)0;
-        sqlstm.sqinds[2] = (         int  )0;
-        sqlstm.sqharm[2] = (unsigned int  )0;
-        sqlstm.sqadto[2] = (unsigned short )0;
-        sqlstm.sqtdso[2] = (unsigned short )0;
-        sqlstm.sqhstv[3] = (         void  *)&v_post_id;
-        sqlstm.sqhstl[3] = (unsigned int  )sizeof(int);
-        sqlstm.sqhsts[3] = (         int  )0;
-        sqlstm.sqindv[3] = (         void  *)0;
-        sqlstm.sqinds[3] = (         int  )0;
-        sqlstm.sqharm[3] = (unsigned int  )0;
-        sqlstm.sqadto[3] = (unsigned short )0;
-        sqlstm.sqtdso[3] = (unsigned short )0;
-        sqlstm.sqphsv = sqlstm.sqhstv;
-        sqlstm.sqphsl = sqlstm.sqhstl;
-        sqlstm.sqphss = sqlstm.sqhsts;
-        sqlstm.sqpind = sqlstm.sqindv;
-        sqlstm.sqpins = sqlstm.sqinds;
-        sqlstm.sqparm = sqlstm.sqharm;
-        sqlstm.sqparc = sqlstm.sqharc;
-        sqlstm.sqpadto = sqlstm.sqadto;
-        sqlstm.sqptdso = sqlstm.sqtdso;
         sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
         if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
 }
 
 
-
-        if (sqlca.sqlcode == 0) {
-            /* EXEC SQL COMMIT; */ 
-
-{
-            struct sqlexd sqlstm;
-            sqlstm.sqlvsn = 13;
-            sqlstm.arrsiz = 5;
-            sqlstm.sqladtp = &sqladt;
-            sqlstm.sqltdsp = &sqltds;
-            sqlstm.iters = (unsigned int  )1;
-            sqlstm.offset = (unsigned int  )556;
-            sqlstm.cud = sqlcud0;
-            sqlstm.sqlest = (unsigned char  *)&sqlca;
-            sqlstm.sqlety = (unsigned short)4352;
-            sqlstm.occurs = (unsigned int  )0;
-            sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
-            if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
-}
-
-
-            printf("\n댓글이 성공적으로 작성되었습니다.\n");
-        } else {
-            /* EXEC SQL ROLLBACK; */ 
-
-{
-            struct sqlexd sqlstm;
-            sqlstm.sqlvsn = 13;
-            sqlstm.arrsiz = 5;
-            sqlstm.sqladtp = &sqladt;
-            sqlstm.sqltdsp = &sqltds;
-            sqlstm.iters = (unsigned int  )1;
-            sqlstm.offset = (unsigned int  )571;
-            sqlstm.cud = sqlcud0;
-            sqlstm.sqlest = (unsigned char  *)&sqlca;
-            sqlstm.sqlety = (unsigned short)4352;
-            sqlstm.occurs = (unsigned int  )0;
-            sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
-            if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
-}
-
-
-            printf("\n댓글 작성에 실패했습니다.\n");
-        }
+        printf("\n댓글이 성공적으로 작성되었습니다.\n");
     } else {
-        // 사용자가 로그인되지 않았으므로 댓글 작성이 허용되지 않음
-        printf("\n로그인 상태가 아니므로 댓글을 작성할 수 없습니다.\n");
-    }
+        /* EXEC SQL ROLLBACK; */ 
+
+{
+        struct sqlexd sqlstm;
+        sqlstm.sqlvsn = 13;
+        sqlstm.arrsiz = 5;
+        sqlstm.sqladtp = &sqladt;
+        sqlstm.sqltdsp = &sqltds;
+        sqlstm.iters = (unsigned int  )1;
+        sqlstm.offset = (unsigned int  )594;
+        sqlstm.cud = sqlcud0;
+        sqlstm.sqlest = (unsigned char  *)&sqlca;
+        sqlstm.sqlety = (unsigned short)4352;
+        sqlstm.occurs = (unsigned int  )0;
+        sqlcxt((void **)0, &sqlctx, &sqlstm, &sqlfpn);
+        if (sqlca.sqlcode < 0) sql_error("\7ORACLE ERROR:\n");
 }
 
-// 댓글 작성 함수
-void write_comment(int post_id) {
-    system("cls");
-    printf("--------------------------------------------------------------------------------\n");
-    printf("                                   Comment\n");
-    printf("--------------------------------------------------------------------------------\n");
 
-    // 댓글 내용 입력
-    wchar_t comment_text[1000];
-    wprintf(L"\n댓글을 입력하세요 (1000자 이내). ESC 키를 누르면 저장 및 종료됩니다.\n");
-
-    size_t comment_length = 0;
-    wchar_t ch;
-
-    while (1) {
-        ch = _getwch();
-
-        if (ch == L'\r') {
-            wprintf(L"\n");
-            comment_text[comment_length++] = L'\n';
-        } else if (ch == 8 && comment_length > 0) {
-            wprintf(L"\b \b");
-            comment_text[--comment_length] = L'\0';
-        } else if (ch == 27) {
-            // ESC 키 입력 시 종료 및 댓글 저장
-            comment_text[comment_length] = L'\0';
-            input_comment(post_id, comment_text);
-	    read_post(post_id);
-        } else if (ch != L'\r') {
-            wprintf(L"%c", ch);
-            comment_text[comment_length++] = ch;
-        }
-
-        if (comment_length >= sizeof(comment_text) / sizeof(comment_text[0]) - 1) {
-            comment_text[comment_length] = L'\0';
-            break;
-        }
+        printf("\n댓글 작성에 실패했습니다.\n");
     }
 }
 
@@ -2722,7 +2754,7 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
 
     // post_id에 해당하는 댓글을 검색하기 위한 커서 열기
     /* EXEC SQL DECLARE comments_cursor CURSOR FOR
-        SELECT comm_id, id, text FROM post_comment WHERE post_id = :v_post_id; */ 
+        SELECT comm_id, id, text FROM post_comment WHERE post_id = :v_post_id ORDER BY comm_id; */ 
 
 
     /* EXEC SQL OPEN comments_cursor; */ 
@@ -2733,9 +2765,9 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
     sqlstm.arrsiz = 5;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
-    sqlstm.stmt = sq0024;
+    sqlstm.stmt = sq0025;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )586;
+    sqlstm.offset = (unsigned int  )609;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2777,7 +2809,7 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
         sqlstm.sqladtp = &sqladt;
         sqlstm.sqltdsp = &sqltds;
         sqlstm.iters = (unsigned int  )1;
-        sqlstm.offset = (unsigned int  )605;
+        sqlstm.offset = (unsigned int  )628;
         sqlstm.selerr = (unsigned short)1;
         sqlstm.sqlpfmem = (unsigned int  )0;
         sqlstm.cud = sqlcud0;
@@ -2829,10 +2861,9 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
         }
 
         // 댓글 정보 출력
-        printf("\n댓글 ID: %d\n", v_comment_id);
-        printf("사용자 ID: %.*s\n", v_id.len, v_id.arr);
-        printf("댓글 내용: %.*s\n", v_text.len, v_text.arr);
-        printf("---------------------------------\n");
+        printf(" %3d | %.*s\n", v_comment_id, v_id.len, v_id.arr);
+        printf("     | %.*s\n", v_text.len, v_text.arr);
+        printf("--------------------------------------------------------------------------------\n");
     }
 
     // 커서 닫기
@@ -2845,7 +2876,7 @@ struct { unsigned short len; unsigned char arr[1000]; } v_text;
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )632;
+    sqlstm.offset = (unsigned int  )655;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;
@@ -2881,7 +2912,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select id into :b0  from post_comment where comm_id=:b1";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )647;
+    sqlstm.offset = (unsigned int  )670;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -2940,7 +2971,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
             sqlstm.sqltdsp = &sqltds;
             sqlstm.stmt = "delete  from post_comment  where comm_id=:b0";
             sqlstm.iters = (unsigned int  )1;
-            sqlstm.offset = (unsigned int  )670;
+            sqlstm.offset = (unsigned int  )693;
             sqlstm.cud = sqlcud0;
             sqlstm.sqlest = (unsigned char  *)&sqlca;
             sqlstm.sqlety = (unsigned short)4352;
@@ -2977,7 +3008,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
                 sqlstm.sqladtp = &sqladt;
                 sqlstm.sqltdsp = &sqltds;
                 sqlstm.iters = (unsigned int  )1;
-                sqlstm.offset = (unsigned int  )689;
+                sqlstm.offset = (unsigned int  )712;
                 sqlstm.cud = sqlcud0;
                 sqlstm.sqlest = (unsigned char  *)&sqlca;
                 sqlstm.sqlety = (unsigned short)4352;
@@ -2990,9 +3021,9 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
                 printf("댓글이 성공적으로 삭제되었습니다.\n");
                 ch = _getwch();
 
-                   if (ch == 27) {
-	           main();
-                   } 
+                if (ch == 27) {
+	                main();
+                } 
             } else {
                 /* EXEC SQL ROLLBACK; */ 
 
@@ -3003,7 +3034,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
                 sqlstm.sqladtp = &sqladt;
                 sqlstm.sqltdsp = &sqltds;
                 sqlstm.iters = (unsigned int  )1;
-                sqlstm.offset = (unsigned int  )704;
+                sqlstm.offset = (unsigned int  )727;
                 sqlstm.cud = sqlcud0;
                 sqlstm.sqlest = (unsigned char  *)&sqlca;
                 sqlstm.sqlety = (unsigned short)4352;
@@ -3022,36 +3053,6 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     } else {
         printf("댓글을 찾을 수 없습니다.\n");
     }
-}
-
-// 사용자로부터 comm_id를 입력받는 함수
-int get_comm_id_from_user() {
-    int comm_id;
-    printf("삭제할 댓글의 ID를 입력하세요: ");
-    scanf("%d", &comm_id);
-    return comm_id;
-}
-
-// 댓글 삭제 함수
-void delete_comment() {
-    system("cls");
-    printf("--------------------------------------------------------------------------------\n");
-    printf("                              댓글 삭제\n");
-    printf("--------------------------------------------------------------------------------\n");
-
-    // 사용자가 로그인되어 있는지 확인
-    if (!login_state) {
-        printf("로그인 상태가 아니므로 댓글을 삭제할 수 없습니다.\n");
-        getch();
-        return;
-    }
-
-    // 삭제할 댓글 정보를 가져오기 위해 comm_id를 입력받음
-    int comm_id = get_comm_id_from_user();
-
-    // delete_comment_from_db 함수 호출
-    delete_comment_from_db(comm_id);
-    getch();
 }
 
 // 댓글 정보를 가져오는 함수
@@ -3078,7 +3079,7 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.stmt = "select id into :b0  from post_comment where comm_id=:b1";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )719;
+    sqlstm.offset = (unsigned int  )742;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -3130,10 +3131,10 @@ struct { unsigned short len; unsigned char arr[20]; } v_id;
 void DB_connect()
 {
    /* 본인 계정이름으로 바꾸어 쓸 것 */
-   strcpy((char *)uid.arr,"a20183148@//sedb.deu.ac.kr:1521/orcl");
+   strcpy((char *)uid.arr,"a20192162@//sedb.deu.ac.kr:1521/orcl");
    uid.len = (short) strlen((char *)uid.arr);
    /* 본인 계정 암호로 바꾸어 쓸 것 */
-   strcpy((char *)pwd.arr,"20183148");
+   strcpy((char *)pwd.arr,"20192162");
    pwd.len = (short) strlen((char *)pwd.arr);
 
    /* EXEC SQL CONNECT :uid IDENTIFIED BY :pwd; */ 
@@ -3145,7 +3146,7 @@ void DB_connect()
    sqlstm.sqladtp = &sqladt;
    sqlstm.sqltdsp = &sqltds;
    sqlstm.iters = (unsigned int  )10;
-   sqlstm.offset = (unsigned int  )742;
+   sqlstm.offset = (unsigned int  )765;
    sqlstm.cud = sqlcud0;
    sqlstm.sqlest = (unsigned char  *)&sqlca;
    sqlstm.sqlety = (unsigned short)4352;
@@ -3232,7 +3233,7 @@ struct { unsigned short len; unsigned char arr[20]; } pw;
     sqlstm.stmt = "select id ,pw into :b0,:b1  from user_info where id='admi\
 n'";
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )773;
+    sqlstm.offset = (unsigned int  )796;
     sqlstm.selerr = (unsigned short)1;
     sqlstm.sqlpfmem = (unsigned int  )0;
     sqlstm.cud = sqlcud0;
@@ -3304,7 +3305,7 @@ void sql_error(char *msg)
     sqlstm.sqladtp = &sqladt;
     sqlstm.sqltdsp = &sqltds;
     sqlstm.iters = (unsigned int  )1;
-    sqlstm.offset = (unsigned int  )796;
+    sqlstm.offset = (unsigned int  )819;
     sqlstm.cud = sqlcud0;
     sqlstm.sqlest = (unsigned char  *)&sqlca;
     sqlstm.sqlety = (unsigned short)4352;

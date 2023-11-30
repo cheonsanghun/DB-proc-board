@@ -51,8 +51,15 @@ void Post_Inquiry_Display();
 void rtrim();
 void search_post_inquiry(int offset);
 void search_post();
-void deletePostInPost(int post_id);
-
+int deletePostInPost(int post_id);
+void write_comment(int post_id);
+void read_post(int post_id);
+int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del);
+void input_comment(int post_id, const wchar_t *w_comment_text);
+void display_comments(int post_id);
+void delete_comment_from_db(int comm_id);
+int get_comment_info(int comm_id, char *id);
+int get_post_del(int post_id);
 
 EXEC SQL BEGIN DECLARE SECTION;
 	VARCHAR uid[80];
@@ -67,6 +74,8 @@ struct UserInfo {
     char id[20];
     char pw[20];
 };
+
+
 
 bool login_state = false;
 // 유저 정보 
@@ -182,7 +191,7 @@ int get_post_info(int post_id, char* title, char* id, int* del) {
 }
 
 // 게시글안에서 게시글을 삭제할 때 사용할 함
-void deletePostInPost(int post_id){
+int deletePostInPost(int post_id){
     while(true){
         char op[5];
         printf("                            삭제하시겠습니까?(y,n): ");    
@@ -192,7 +201,7 @@ void deletePostInPost(int post_id){
             break;
         } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
             // 'n' 또는 'N'을 입력하면 함수 종료
-            return;
+            return 0;
         }
     }  
 
@@ -219,6 +228,7 @@ void deletePostInPost(int post_id){
     printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
     printf("--------------------------------------------------------------------------------\n");
     getch();
+    return 1;
 }
 
 // 게시글 삭제 처리
@@ -944,6 +954,10 @@ void search_post(){
 
         if (strcmp(input, "1") == 0) { 
             // 글 보기 기능
+   	 int post_id;
+    	printf("글 번호를 입력하세요: ");
+    	scanf("%d", &post_id);
+    	read_post(post_id); // read_post 함수 호출
         }
         else if (strcmp(input, "2") == 0) {
             if ((s_offset - OFFSET_SIZE) > -1){
@@ -993,6 +1007,10 @@ void Post_Inquiry_Display()
 
         if (strcmp(input, "1") == 0) {
             // 글 보기 기능
+            int post_id;
+            printf("글 번호를 입력하세요: ");
+            scanf("%d", &post_id);
+            read_post(post_id); // read_post 함수 호출
         }else if (strcmp(input, "2") == 0) {
             if ((g_offset - OFFSET_SIZE) > -1){
                 prevOffset = g_offset;
@@ -1128,6 +1146,320 @@ void rtrim(char temp[])
         }
 	temp[i+1]='\0';
 }
+
+// 게시글 읽기 함수
+void read_post(int post_id) {
+    
+    // 글 삭제 여부
+    if(get_post_del(post_id)){
+        printf("게시글 정보를 찾을 수 없습니다.\n");
+        getch();
+        return 0;
+    }
+    
+    // 게시글 정보를 가져옴
+    char title[128];
+    char id[20];
+    int del[1];
+    wchar_t text[516];
+    wchar_t ch;
+    char input[10];
+    
+    while(1){
+        system("cls");
+        printf("--------------------------------------------------------------------------------\n");
+        printf("                                   글 읽기\n");
+        printf("--------------------------------------------------------------------------------\n");
+
+        if (get_post_text(post_id, title, id, text, del)) {
+            // 게시글 제목 출력
+            printf("제목: %s\n", title);
+            // 게시글 작성자와 삭제 여부 출력
+            printf("작성자: %s\n", id);
+            if (del == 1) {
+                printf("delete\n");
+            } else {
+                // 게시글 내용 출력
+                wprintf(L"\n%ls", text);
+
+                // 댓글 출력
+                printf("\n\n--------------------------------------------------------------------------------\n");
+                printf("                                   댓글 목록\n");
+                printf("--------------------------------------------------------------------------------\n");
+                display_comments(post_id);
+
+                // 댓글 보기 및 삭제 옵션 출력
+                printf("\n\nOptions:\n");
+                printf("1) 댓글 달기\n");
+                printf("2) 댓글 삭제\n");
+                printf("3) 글 삭제\n");
+                printf("0) 뒤로 가기\n");
+                printf("> ");
+                scanf(" %s", input);  // 공백을 추가하여 버퍼를 비움
+
+                if (strcmp(input, "1") == 0) {
+                    if(login_state){
+                        printf("댓글을 입력해주세요: ");
+                        char comm[100];
+                        scanf("%s",comm);
+                        input_comment(post_id, comm);
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if (strcmp(input, "2") == 0) {
+                    if(login_state){
+                        int comm_id;
+                        printf("삭제할 댓글의 ID를 입력하세요: ");
+                        scanf("%d",&comm_id);
+                        delete_comment_from_db(comm_id);  // 댓글 삭제 함수 호출
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if(strcmp(input, "3") == 0){ // 글 삭제
+                    if(login_state){
+                        if(deletePostInPost(post_id)){
+                            break;
+                        }
+                    }
+                    else{
+                        printf("로그인해야 합니다!\n");
+                        getch();
+                    }
+                } else if (strcmp(input, "0") == 0) {
+                    break;
+                } else {
+                    printf("잘못된 선택입니다.\n");
+                }
+            }
+        } else {
+            printf("not found.\n");
+        }
+    }
+}
+
+int get_post_del(int post_id) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+        int v_del;
+    EXEC SQL END DECLARE SECTION;
+
+    v_post_id = post_id;
+
+    // 해당 게시글의 내용을 가져오는 SQL 실행
+    EXEC SQL SELECT del INTO :v_del
+              FROM post
+              WHERE post_id = :v_post_id;
+
+    if (sqlca.sqlcode == 0) {
+        return v_del;  // 가져온 값이 있음
+    } else {
+        return -1;  // 가져온 값이 없음
+    }
+}
+
+// 게시글 내용을 가져오는 함수
+int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+       varchar v_title[128];
+       varchar v_id[20];
+        varchar v_text[516];
+        int v_del[1];
+    EXEC SQL END DECLARE SECTION;
+
+    v_post_id = post_id;
+
+    // 해당 게시글의 내용을 가져오는 SQL 실행
+    EXEC SQL SELECT title, id, text INTO :v_title, v_id, v_text
+              FROM post
+              WHERE post_id = :v_post_id;
+
+    // Oracle VARCHAR 변수의 길이를 직접 사용하여 공백 제거
+    int length = v_text.len;
+    while (length > 0 && v_text.arr[length - 1] == ' ') {
+        length--;
+    }
+    v_text.arr[length] = '\0';
+
+    // 가져온 문자열을 넓은 문자열로 변환
+    int mb_len = v_text.len; // 가져온 문자열의 길이
+    char *mb_str = (char *)v_text.arr;
+
+    // 현재 로캘에 따라서 넓은 문자열로 변환
+    setlocale(LC_ALL, ""); // 현재 로캘로 설정
+    mbstowcs(text, mb_str, mb_len);
+    text[mb_len] = L'\0'; // NULL 종료 문자 추가
+
+    if (sqlca.sqlcode == 0) {
+        /* 가져온 값을 C 문자열에 복사 */
+        strncpy(title, (char*)v_title.arr, v_title.len);
+        title[v_title.len] = '\0';
+
+        strncpy(id, (char*)v_id.arr, v_id.len);
+        id[v_id.len] = '\0';    
+        *del = v_del;
+        return 1;  // 가져온 값이 있음
+    } else {
+        return 0;  // 가져온 값이 없음
+    }
+}
+
+// get_comment_id 함수
+int get_comment_id() {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_comment_id;
+    EXEC SQL END DECLARE SECTION;
+
+    /* Register sql_error() as the error handler. */
+    EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+
+    /* 실행시킬 SQL 문장: 댓글 테이블에서 최대 댓글 ID를 찾음 */
+    EXEC SQL SELECT NVL(MAX(comm_id), 0) INTO :v_comment_id FROM post_comment;
+
+    /* 최대 댓글 ID에 1을 더하여 새로운 댓글 ID 생성 */
+    v_comment_id = v_comment_id + 1;
+
+    /* 가져온 comment_id 값을 반환 */
+    return v_comment_id;
+}
+
+// 댓글을 데이터베이스에 저장하는 함수
+void input_comment(int post_id, char *comm) {
+    // 댓글 ID를 얻어옴
+    int v_comment_id = get_comment_id();
+
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+        varchar v_id[20];
+        varchar v_text[100];
+    EXEC SQL END DECLARE SECTION;
+
+    v_post_id = post_id;
+
+    strncpy((char *)v_id.arr, user.id, sizeof(v_id.arr));
+    v_id.len = strlen((char *)v_id.arr);
+
+    // comm 문자열을 v_text에 복사
+    strncpy((char *)v_text.arr, comm, sizeof(v_text.arr));
+    v_text.len = strlen((char *)v_text.arr);
+
+    // 실행시킬 SQL 문장
+    EXEC SQL INSERT INTO post_comment (comm_id, id, text, post_id) VALUES (:v_comment_id, :v_id, :v_text, :v_post_id);
+
+    if (sqlca.sqlcode == 0) {
+        EXEC SQL COMMIT;
+        printf("\n댓글이 성공적으로 작성되었습니다.\n");
+    } else {
+        EXEC SQL ROLLBACK;
+        printf("\n댓글 작성에 실패했습니다.\n");
+    }
+}
+
+// 댓글을 가져오는 함수
+void display_comments(int post_id) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_post_id;
+        int v_comment_id;
+        varchar v_id[20];
+        varchar v_text[1000];
+    EXEC SQL END DECLARE SECTION;
+
+    v_post_id = post_id;
+
+    // post_id에 해당하는 댓글을 검색하기 위한 커서 열기
+    EXEC SQL DECLARE comments_cursor CURSOR FOR
+        SELECT comm_id, id, text FROM post_comment WHERE post_id = :v_post_id ORDER BY comm_id;
+
+    EXEC SQL OPEN comments_cursor;
+
+    // 댓글을 검색하고 표시
+    while (1) {
+        EXEC SQL FETCH comments_cursor INTO :v_comment_id, :v_id, :v_text;
+        if (sqlca.sqlcode != 0) {
+            break; // 더 이상 행이 없음
+        }
+
+        // 댓글 정보 출력
+        printf(" %3d | %.*s\n", v_comment_id, v_id.len, v_id.arr);
+        printf("     | %.*s\n", v_text.len, v_text.arr);
+        printf("--------------------------------------------------------------------------------\n");
+    }
+
+    // 커서 닫기
+    EXEC SQL CLOSE comments_cursor;
+}
+
+// 댓글 삭제 함수
+void delete_comment_from_db(int comm_id) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_comm_id;
+        varchar v_id[20];
+    EXEC SQL END DECLARE SECTION;
+
+    v_comm_id = comm_id;
+
+    // 댓글 정보를 가져오는 SQL 실행
+    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id;
+   
+    wchar_t ch;
+
+    if (sqlca.sqlcode == 0) {
+        // 가져온 값을 C 문자열에 복사
+        char id[20];
+        strncpy(id, (char *)v_id.arr, v_id.len);
+        id[v_id.len] = '\0';
+
+        // 현재 로그인한 사용자의 ID와 댓글 작성자의 ID 비교
+        if (strcmp(user.id, id) == 0) {
+            // 로그인한 사용자와 댓글 작성자가 일치하므로 삭제 가능
+            EXEC SQL DELETE FROM post_comment WHERE comm_id = :v_comm_id;
+            if (sqlca.sqlcode == 0) {
+                EXEC SQL COMMIT;
+                printf("댓글이 성공적으로 삭제되었습니다.\n");
+                ch = _getwch();
+
+                if (ch == 27) {
+	                main();
+                } 
+            } else {
+                EXEC SQL ROLLBACK;
+                printf("댓글 삭제에 실패했습니다.\n");
+            }
+        } else {
+            // 댓글 작성자와 현재 로그인한 사용자가 다르므로 삭제 불가능
+            printf("현재 로그인한 사용자와 댓글 작성자가 다르므로 삭제할 수 없습니다.\n");
+        }
+    } else {
+        printf("댓글을 찾을 수 없습니다.\n");
+    }
+}
+
+// 댓글 정보를 가져오는 함수
+int get_comment_info(int comm_id, char *id) {
+    EXEC SQL BEGIN DECLARE SECTION;
+        int v_comm_id;
+        varchar v_id[20];
+    EXEC SQL END DECLARE SECTION;
+
+    v_comm_id = comm_id;
+
+    // 댓글 정보를 가져오는 SQL 실행
+    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id;
+
+    if (sqlca.sqlcode == 0) {
+        // 가져온 값을 C 문자열에 복사
+        strncpy(id, (char *)v_id.arr, v_id.len);
+        id[v_id.len] = '\0';
+        return 1;  // 가져온 값이 있음
+    } else {
+        return 0;  // 가져온 값이 없음
+    }
+}
+
 
 void DB_connect()
 {
