@@ -1489,8 +1489,6 @@ void delete_id() {
 
         if ((strcmp(temp_pw, user.pw) == 0) && (strcmp(temp_pw2, user.pw) == 0)) {
             login_state = false;
-            user.id[0] = '\0';
-            user.pw[0] = '\0';
             break;
         }
         else {
@@ -1630,7 +1628,7 @@ void pw_update() {
         }
         else {
             gotoxy(26, 5);
-            printf("현재 비밀번호가 일치하지 않습니다.");
+            printf("비밀번호가 일치하지 않습니다.");
         }
 
     }
