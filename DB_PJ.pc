@@ -57,8 +57,8 @@ void read_post(int post_id);
 int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del);
 void input_comment(int post_id, const wchar_t *w_comment_text);
 void display_comments(int post_id);
-void delete_comment_from_db(int comm_id);
-int get_comment_info(int comm_id, char *id);
+void delete_comment_from_db(int comm_id, int post_id);
+int get_comment_info(int comm_id, char *id, int post_id);
 int get_post_del(int post_id);
 
 EXEC SQL BEGIN DECLARE SECTION;
@@ -192,21 +192,9 @@ int get_post_info(int post_id, char* title, char* id, int* del) {
 
 // 게시글안에서 게시글을 삭제할 때 사용할 함
 int deletePostInPost(int post_id){
-    while(true){
-        char op[5];
-        printf("                            삭제하시겠습니까?(y,n): ");    
-        scanf("%s",op);
-        if (strcmp(op, "y") == 0 || strcmp(op, "Y") == 0) {
-            // 'y' 또는 'Y'를 입력하면 루프 종료
-            break;
-        } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
-            // 'n' 또는 'N'을 입력하면 함수 종료
-            return 0;
-        }
-    }  
-
     EXEC SQL BEGIN DECLARE SECTION;
         int v_post_id;
+        varchar v_id[20];
     EXEC SQL END DECLARE SECTION;
 
     /* Register sql_error() as the error handler. */
@@ -215,19 +203,46 @@ int deletePostInPost(int post_id){
     /* 매개변수 post_id 값을 Oracle 변수에 복사 */
     v_post_id = post_id;
 
-    /* 실행시킬 SQL 문장*/
-    EXEC SQL UPDATE post SET del = 1 WHERE post_id = :v_post_id;
 
+    wchar_t ch;
+    /* 게시물 삭제 권한 확인을 위한 SQL 문장*/
+    EXEC SQL SELECT id INTO :v_id FROM post WHERE post_id = :v_post_id;
+
+    if (sqlca.sqlcode == 0){
+        char id[20];
+        strncpy(id, (char *)v_id.arr, v_id.len);
+        id[v_id.len] = '\0';
+
+        if (strcmp(user.id, id) == 0){
+               char op[5];
+               printf("                            삭제하시겠습니까?(y,n): ");    
+               scanf("%s",op);
+               if (strcmp(op, "y") == 0 || strcmp(op, "Y") == 0) {
+	   /* 실행시킬 SQL 문장*/
+    	   EXEC SQL UPDATE post SET del = 1 WHERE post_id = :v_post_id;
+                   // 'y' 또는 'Y'를 입력하면 루프 종료
+                   printf("삭제가 완료되었습니다.");
+                       system("cls");
+                       printf("--------------------------------------------------------------------------------\n");
+                       printf("                                   게시물 삭제\n");
+                       printf("--------------------------------------------------------------------------------\n");
+                       printf("                                 [ 게시물 정보 ]\n\n\n\n");;
+                       printf("                              삭제가 완료되었습니다!\n");
+                       printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                       printf("--------------------------------------------------------------------------------\n");
+                       getch();
+	           Post_Inquiry_Display();
+               } else if (strcmp(op, "n") == 0 || strcmp(op, "N") == 0) {
+                   // 'n' 또는 'N'을 입력하면 함수 종료
+                   return 0;
+               }
+         }else if (strcmp(user.id, id) != 0){
+            printf("현재 로그인한 사용자는 게시글을 삭제할 권한이 없습니다.\n");
+            getch();
+	read_post(post_id);
+         }         
+    }
     EXEC SQL COMMIT;
-    system("cls");
-    printf("--------------------------------------------------------------------------------\n");
-    printf("                                   게시물 삭제\n");
-    printf("--------------------------------------------------------------------------------\n");
-    printf("                                 [ 게시물 정보 ]\n\n\n\n");;
-    printf("                              삭제가 완료되었습니다!\n");
-    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    printf("--------------------------------------------------------------------------------\n");
-    getch();
     return 1;
 }
 
@@ -1194,7 +1209,6 @@ void read_post(int post_id) {
                 display_comments(post_id);
 
                 // 댓글 보기 및 삭제 옵션 출력
-                printf("\n\nOptions:\n");
                 printf("1) 댓글 달기\n");
                 printf("2) 댓글 삭제\n");
                 printf("3) 글 삭제\n");
@@ -1218,7 +1232,7 @@ void read_post(int post_id) {
                         int comm_id;
                         printf("삭제할 댓글의 ID를 입력하세요: ");
                         scanf("%d",&comm_id);
-                        delete_comment_from_db(comm_id);  // 댓글 삭제 함수 호출
+                        delete_comment_from_db(comm_id, post_id);  // 댓글 삭제 함수 호출
                     }
                     else{
                         printf("로그인해야 합니다!\n");
@@ -1314,16 +1328,19 @@ int get_post_text(int post_id,char* title, char* id, wchar_t *text, int *del) {
 }
 
 // get_comment_id 함수
-int get_comment_id() {
+int get_comment_id(int post_id) {
     EXEC SQL BEGIN DECLARE SECTION;
         int v_comment_id;
+        int v_post_id;
     EXEC SQL END DECLARE SECTION;
 
     /* Register sql_error() as the error handler. */
     EXEC SQL WHENEVER SQLERROR DO sql_error("\7ORACLE ERROR:\n");
+    
+    v_post_id = post_id;    
 
     /* 실행시킬 SQL 문장: 댓글 테이블에서 최대 댓글 ID를 찾음 */
-    EXEC SQL SELECT NVL(MAX(comm_id), 0) INTO :v_comment_id FROM post_comment;
+    EXEC SQL SELECT NVL(MAX(comm_id), 0) INTO :v_comment_id FROM post_comment where post_id = :v_post_id;
 
     /* 최대 댓글 ID에 1을 더하여 새로운 댓글 ID 생성 */
     v_comment_id = v_comment_id + 1;
@@ -1335,7 +1352,7 @@ int get_comment_id() {
 // 댓글을 데이터베이스에 저장하는 함수
 void input_comment(int post_id, char *comm) {
     // 댓글 ID를 얻어옴
-    int v_comment_id = get_comment_id();
+    int v_comment_id = get_comment_id(post_id);
 
     EXEC SQL BEGIN DECLARE SECTION;
         int v_post_id;
@@ -1358,6 +1375,7 @@ void input_comment(int post_id, char *comm) {
     if (sqlca.sqlcode == 0) {
         EXEC SQL COMMIT;
         printf("\n댓글이 성공적으로 작성되었습니다.\n");
+        getch();
     } else {
         EXEC SQL ROLLBACK;
         printf("\n댓글 작성에 실패했습니다.\n");
@@ -1399,16 +1417,18 @@ void display_comments(int post_id) {
 }
 
 // 댓글 삭제 함수
-void delete_comment_from_db(int comm_id) {
+void delete_comment_from_db(int comm_id, int post_id) {
     EXEC SQL BEGIN DECLARE SECTION;
         int v_comm_id;
         varchar v_id[20];
+        int v_post_id;
     EXEC SQL END DECLARE SECTION;
 
     v_comm_id = comm_id;
+    v_post_id = post_id;
 
     // 댓글 정보를 가져오는 SQL 실행
-    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id;
+    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id and post_id = :v_post_id;
    
     wchar_t ch;
 
@@ -1427,16 +1447,14 @@ void delete_comment_from_db(int comm_id) {
                 printf("댓글이 성공적으로 삭제되었습니다.\n");
                 ch = _getwch();
 
-                if (ch == 27) {
-	                main();
-                } 
             } else {
-                EXEC SQL ROLLBACK;
                 printf("댓글 삭제에 실패했습니다.\n");
+   
             }
-        } else {
+        } else if (strcmp(user.id, id) != 0){
             // 댓글 작성자와 현재 로그인한 사용자가 다르므로 삭제 불가능
             printf("현재 로그인한 사용자와 댓글 작성자가 다르므로 삭제할 수 없습니다.\n");
+            ch = _getwch();	 
         }
     } else {
         printf("댓글을 찾을 수 없습니다.\n");
@@ -1444,16 +1462,18 @@ void delete_comment_from_db(int comm_id) {
 }
 
 // 댓글 정보를 가져오는 함수
-int get_comment_info(int comm_id, char *id) {
+int get_comment_info(int comm_id, char *id, int post_id) {
     EXEC SQL BEGIN DECLARE SECTION;
         int v_comm_id;
         varchar v_id[20];
+        int v_post_id;
     EXEC SQL END DECLARE SECTION;
 
     v_comm_id = comm_id;
+    v_post_id = post_id;
 
     // 댓글 정보를 가져오는 SQL 실행
-    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id;
+    EXEC SQL SELECT id INTO :v_id FROM post_comment WHERE comm_id = :v_comm_id and post_id = :v_post_id;
 
     if (sqlca.sqlcode == 0) {
         // 가져온 값을 C 문자열에 복사
@@ -1469,10 +1489,10 @@ int get_comment_info(int comm_id, char *id) {
 void DB_connect()
 {
    /* 본인 계정이름으로 바꾸어 쓸 것 */
-   strcpy((char *)uid.arr,"a20183148@//sedb.deu.ac.kr:1521/orcl");
+   strcpy((char *)uid.arr,"a20192162@//sedb.deu.ac.kr:1521/orcl");
    uid.len = (short) strlen((char *)uid.arr);
    /* 본인 계정 암호로 바꾸어 쓸 것 */
-   strcpy((char *)pwd.arr,"20183148");
+   strcpy((char *)pwd.arr,"20192162");
    pwd.len = (short) strlen((char *)pwd.arr);
 
    EXEC SQL CONNECT :uid IDENTIFIED BY :pwd;
